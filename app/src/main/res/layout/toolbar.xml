@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="4dp"
+    android:background="@color/colorPrimaryDark">
+
+   <!-- <com.sevenhorse.View.CircularImageView
+        android:id="@+id/profile"
+        android:layout_width="40sp"
+        android:layout_height="40sp"
+        android:layout_alignParentRight="true"
+        android:foregroundGravity="right"/>-->
+</android.support.v7.widget.Toolbar>

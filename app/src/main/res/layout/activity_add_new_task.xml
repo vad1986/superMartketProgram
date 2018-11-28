@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.AddNewTaskActivity">
+
+
+    <EditText
+        android:id="@+id/editStartDate_EditText"
+        android:layout_width="195dp"
+        android:layout_height="wrap_content"
+        android:hint="Stard Date DD-MM-YYYY"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="center_horizontal"
+        android:inputType="date"
+        android:layout_alignParentRight="true"
+        />
+    <EditText
+        android:id="@+id/editStartTime_editText"
+        android:layout_width="191dp"
+        android:layout_height="wrap_content"
+        android:hint="Start Time"
+        android:inputType="time"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="center_horizontal"/>
+
+    <EditText
+        android:id="@+id/editEnd_EditText"
+        android:layout_width="195dp"
+        android:layout_height="wrap_content"
+        android:hint="End Date DD-MM-YYYY"
+        android:layout_alignParentRight="true"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/editStartDate_EditText"
+        android:inputType="date"
+        />
+
+
+    <EditText
+        android:id="@+id/editEndtTime_editText"
+        android:layout_width="191dp"
+        android:layout_height="wrap_content"
+        android:hint="End Time"
+        android:layout_below="@+id/editStartTime_editText"
+        android:inputType="time"
+
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="center_horizontal"/>
+
+
+    <EditText
+        android:id="@+id/nameTask_EditText"
+        android:layout_width="191dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/editEnd_EditText"
+        android:defaultFocusHighlightEnabled="true"
+        android:gravity="center_horizontal"
+        android:hint="Name Task"
+        android:inputType="text"
+         />
+
+    <Spinner
+        android:id="@+id/workers_Spinner"
+        android:layout_width="191dp"
+        android:layout_height="38dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/editEnd_EditText">
+    </Spinner>
+    <EditText
+        android:id="@+id/taskDecription_EditText"
+        android:layout_width="match_parent"
+        android:layout_height="163dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="225dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:gravity="top"
+        android:background="@drawable/border_style"
+        android:padding="15dp"
+        android:hint="Task description" />
+
+    <Button
+        android:id="@+id/creatNewTask_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="0dp"
+        android:text="Creat new task" />
+
+
+</RelativeLayout>

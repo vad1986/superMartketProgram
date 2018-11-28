@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.SigningAClockActivity">
+    <include android:id="@+id/toolbar_signingAClock"
+        layout="@layout/toolbar"/>
+
+    <TextView
+        android:id="@+id/UserName_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="85dp"
+        android:text="User Name: "
+        android:textSize="25dp" />
+
+
+
+
+    <TextView
+        android:id="@+id/enter_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="129dp"
+        android:textSize="25dp"
+        android:text="Enter Clock " />
+    <TextView
+        android:id="@+id/enterData_TextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_style"
+        android:layout_below="@+id/enter_TextView"
+        android:textSize="25dp"
+        android:paddingHorizontal="@android:dimen/app_icon_size"
+        android:text="25/03/1990  00:00:00"/>
+
+    <TextView
+        android:id="@+id/exit_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="219dp"
+        android:textSize="25dp"
+        android:text="Exit Clock" />
+
+    <TextView
+        android:id="@+id/exitData_TextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/exit_TextView"
+        android:background="@drawable/border_style"
+        android:paddingHorizontal="@android:dimen/app_icon_size"
+        android:textSize="25dp"
+        android:text="25/03/1990  00:00:00"
+        />
+
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="60dp"
+        android:layout_height="97dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@drawable/finger" />
+
+
+
+</RelativeLayout>
