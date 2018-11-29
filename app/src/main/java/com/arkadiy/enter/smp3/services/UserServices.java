@@ -17,6 +17,7 @@ import com.arkadiy.enter.smp3.dataObjects.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.HashMap;
@@ -34,9 +35,10 @@ public class UserServices {
                     public void onResponse(Object response) {
                         try {
                             JSONObject jsonResponse = new JSONObject(String.valueOf(response));
-                            if(jsonResponse.getInt("response_code") >=500 ){
+                            if(jsonResponse.getInt("response_code") >=504 ){
                                 LogOut (context);
 //                                Intent intent = new Intent(context,LogInActivity.class);
+
 //
 
 
@@ -68,8 +70,8 @@ public class UserServices {
 
 
                 headers.put("user_name",User.getUserName());
-                headers.put("user_id", User.getUserId());
                 headers.put("private_key",User.getPrivateKey());
+                headers.put("user_id", User.getUserId());
 
 
 
@@ -84,19 +86,28 @@ public class UserServices {
     }
 
     public static void insertIntoUser(String str){
-        try {
-            JSONObject j = new JSONObject(str);
+
+        if (str.length()<1){
+            try {
+                JSONObject j = new JSONObject(str);
 //            private static String userName;
 //            private static String privateKey;
 //            private static int userId;
 //            private static int role;
-            User.setUserName(j.getString("user_name"));
-            User.setPrivateKey(j.getString("private_key"));
-            User.setUserId(j.getInt("user_id"));
-            User.setRole(j.getInt("role"));
-        } catch (JSONException e) {
-            e.printStackTrace();
+                User.setUserName(j.getString("user_name"));
+                User.setPrivateKey(j.getString("private_key"));
+                User.setUserId(j.getInt("user_id"));
+                User.setRole(j.getInt("role"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }else{
+            User.setUserName(null);
+            User.setPrivateKey(null);
+            User.setUserId(0);
+            User.setRole(0);
         }
+
 
     }
 
@@ -133,8 +144,15 @@ public class UserServices {
     }
     public static void LogOut (final Context context){
 
-        saveFile(FileConfig.USER_FILE,"",context);
-        insertIntoUser("");
+//        saveFile(FileConfig.USER_FILE,"",context);
+        File file = new File(context.getFilesDir(),FileConfig.USER_FILE);
+        if(file.exists()){
+            context.deleteFile(FileConfig.USER_FILE);
+            Toast.makeText(context,"File Delete Success",Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(context,"File not found",Toast.LENGTH_LONG).show();
+        }
+        insertIntoUser(null);
         Intent intent = new Intent(context,LogInActivity.class);
         context.startActivity(intent);
 

@@ -41,16 +41,16 @@ public class LogInActivity extends AppCompatActivity {
         logIn = (Button)findViewById(R.id.logIn_button);
 
         requestQueue = Volley.newRequestQueue(this);
-        strFile = UserServices.readFile(FileConfig.USER_FILE,LogInActivity.this);
-        if( strFile!= null){
-            UserServices.insertIntoUser(strFile);
+//        strFile = UserServices.readFile(FileConfig.USER_FILE,LogInActivity.this);
+//        if( strFile!= null){
+//            UserServices.insertIntoUser(strFile);
 //            if(User.getPrivateKey()!= null) {
 //
 ////                Intent intent;
 ////                intent = new Intent(LogInActivity.this, MainActivity.class);
 ////                startActivity(intent);
 //            }
-        }
+//        }
 
         logIn.setOnClickListener(new View.OnClickListener() {
             @Override

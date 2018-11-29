@@ -37,7 +37,7 @@
         android:layout_below="@+id/enter_TextView"
         android:textSize="25dp"
         android:paddingHorizontal="@android:dimen/app_icon_size"
-        android:text="25/03/1990  00:00:00"/>
+        />
 
     <TextView
         android:id="@+id/exit_TextView"
@@ -57,17 +57,25 @@
         android:background="@drawable/border_style"
         android:paddingHorizontal="@android:dimen/app_icon_size"
         android:textSize="25dp"
-        android:text="25/03/1990  00:00:00"
+
         />
 
-    <ImageButton
-        android:id="@+id/imageButton2"
-        android:layout_width="60dp"
-        android:layout_height="97dp"
+    <Button
+        android:id="@+id/exit_Button"
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        app:srcCompat="@drawable/finger" />
+        android:layout_marginBottom="0dp"
+        android:text="EXIT" />
 
+    <Button
+        android:id="@+id/enter_button"
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="ENTER" />
 
 
 </RelativeLayout>

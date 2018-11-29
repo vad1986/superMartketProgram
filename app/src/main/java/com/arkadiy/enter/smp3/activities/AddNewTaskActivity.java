@@ -92,10 +92,10 @@ public class AddNewTaskActivity extends AppCompatActivity {
         creatNewTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String start = "10-23-2018 12:45"; //startDateTask.getText().toString()+" "+startTimeTask.getText().toString();
-                String end = "12-27-2018 12:45";//endDateTask.getText().toString()+" "+endTimeTask.getText().toString();
-                String name = "VADIM ZONA";//nameTaskEditText.getText().toString() ;
-                String dec = "VADIM ZONA HAHOOSHARMOOTA";//taskDecriptionEditText.getText().toString();
+                String start = startDateTask.getText().toString()+" "+startTimeTask.getText().toString();
+                String end = endDateTask.getText().toString()+" "+endTimeTask.getText().toString();
+                String name = nameTaskEditText.getText().toString() ;
+                String dec = taskDecriptionEditText.getText().toString();
 
                 task = new Task(2,start,end,name,dec,AddNewTaskActivity.this);
             }

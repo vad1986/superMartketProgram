@@ -12,13 +12,13 @@ import org.json.JSONObject;
 
 public class Task {
 
-private int forUserId;
-private String dateStart;
-private String dateEnd;
-private String nameTask;
-private String description;
-private Context context;
-private JSONObject taskJson;
+    private int forUserId;
+    private String dateStart;
+    private String dateEnd;
+    private String nameTask;
+    private String description;
+    private Context context;
+    private JSONObject taskJson;
     private RequestQueue requestQueue;
 
     public Task(int forUserId, String dateStart, String dateEnd, String nameTask, String description, Context context) {
@@ -29,6 +29,7 @@ private JSONObject taskJson;
         this.description = description;
         this.context = context;
         requestQueue = Volley.newRequestQueue(this.context);
+        taskJson = new JSONObject();
         try {
             this.taskJson.put("user_id",this.forUserId);
             this.taskJson.put("date_start",this.dateStart);
@@ -44,9 +45,6 @@ private JSONObject taskJson;
     }
     //    user_id | date_start (string) | date_end (String) | name (String) | description (String)
 
-    public void creatNewTask(){
-
-    }
     public int getForUserId() {
         return forUserId;
     }
