@@ -54,8 +54,7 @@ public class NewUser {
             jsonNewUser.put("telephone", this.getTelephone());
             jsonNewUser.put("email", this.getEmail());
             jsonNewUser.put("role", this.getRole());
-            UserServices.sendData(AppConfig.MAIN_SERVER_IP + AppConfig.MAIN_SERVER_PORT + AppConfig.ADD_NEW_USER,
-                    jsonNewUser, requestQueue, context);
+            UserServices.sendData(AppConfig.ADD_NEW_USER,jsonNewUser, requestQueue, context,1, null);
         } catch (JSONException e) {
             e.printStackTrace();
         }

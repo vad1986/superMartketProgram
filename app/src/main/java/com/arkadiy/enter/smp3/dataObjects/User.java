@@ -15,6 +15,11 @@ public class User {
         userId=userId;
     }
 
+    public User(JSONObject jsonObject) {
+       userId=jsonObject.optInt("userID");
+        userName=jsonObject.optString("userFirstName")+" "+jsonObject.optString("userLastName");
+    }
+
     public static int getRole() {
         return role;
     }
@@ -24,6 +29,10 @@ public class User {
     }
 
     public static String getUserName() {
+        return userName;
+    }
+
+    public String getUserNameNonStatic() {
         return userName;
     }
 

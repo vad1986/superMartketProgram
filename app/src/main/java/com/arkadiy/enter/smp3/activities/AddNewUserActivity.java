@@ -96,39 +96,6 @@ public class AddNewUserActivity extends AppCompatActivity {
     }
 
 
-//    public void creatNewUser(){
-//        String url =AppConfig.MAIN_SERVER_IP+AppConfig.MAIN_SERVER_PORT+"/manager/new_user";
-
-
-
-//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,
-//                newUser.getJsonNewUser(), new Response.Listener<JSONObject>() {
-//            @Override
-//            public void onResponse(JSONObject response) {
-//                try {
-//                    int respons = response.getInt("response_code");
-//                    Toast.makeText(AddNewUserActivity.this,respons,Toast.LENGTH_LONG);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//
-//            }
-//        }){
-//            /** Passing some request headers* */
-//            @Override
-//            public Map getHeaders() throws AuthFailureError {
-//                HashMap headers = new HashMap();
-//                headers.clear();
-//                headers.put("Content-Type", "application/json");
-//                headers.put("user_id", "2");
-//                return headers;
-//            }
-//        };
-//    }
 }
 //    "user_name":"as233e",
 //            "first_name":"arkashaa",

@@ -1,107 +1,247 @@
 package com.arkadiy.enter.smp3.dataObjects;
 
-import android.content.Context;
-
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
-import com.arkadiy.enter.smp3.config.AppConfig;
-import com.arkadiy.enter.smp3.services.UserServices;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Task {
 
-    private int forUserId;
-    private String dateStart;
-    private String dateEnd;
-    private String nameTask;
-    private String description;
-    private Context context;
-    private JSONObject taskJson;
-    private RequestQueue requestQueue;
+public class Task implements Parcelable {
+    private JSONObject task;
+    Parcelable CREATOR;
 
-    public Task(int forUserId, String dateStart, String dateEnd, String nameTask, String description, Context context) {
-        this.forUserId = forUserId;
-        this.dateStart = dateStart;
-        this.dateEnd = dateEnd;
-        this.nameTask = nameTask;
-        this.description = description;
-        this.context = context;
-        requestQueue = Volley.newRequestQueue(this.context);
-        taskJson = new JSONObject();
+    public Task(JSONObject task) {
+        this.task = task;
+    }
+
+
+    public Task(int userId, String start, String end, String name, String dec) {
+        this.task = new JSONObject();
+        setUserId(userId);
+        setTimeDateStart(start);
+        setTimeDateEnd(end);
+        setNameTask(name);
+        setDescription(dec);
+
+
+    }
+    public JSONObject getTask() {
+        return task;
+    }
+
+    public void setTask(JSONObject task) {
+        this.task = task;
+    }
+
+    public int getIdTask(){
         try {
-            this.taskJson.put("user_id",this.forUserId);
-            this.taskJson.put("date_start",this.dateStart);
-            this.taskJson.put("date_end",this.dateEnd);
-            this.taskJson.put("name",this.nameTask);
-            this.taskJson.put("description",this.description);
+            if(this.task.has("id"))
+                return this.task.getInt("id");
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String url = AppConfig.MAIN_SERVER_IP+AppConfig.MAIN_SERVER_PORT+AppConfig.ADD_NEW_TASK;
-        UserServices.sendData(url,taskJson,requestQueue,context);
-//        creatNewTask();
-    }
-    //    user_id | date_start (string) | date_end (String) | name (String) | description (String)
-
-    public int getForUserId() {
-        return forUserId;
+        return -1;
     }
 
-    public void setForUserId(int forUserId) {
-        this.forUserId = forUserId;
-    }
+    public String getNameTask(){
+        try {
+            if(this.task.has("name"))
+                return this.task.getString("name");
 
-    public JSONObject getTaskJson() {
-        return taskJson;
-    }
-
-    public void setTaskJson(JSONObject taskJson) {
-        this.taskJson = taskJson;
-    }
-
-    public String getDateStart() {
-        return dateStart;
-    }
-
-    public void setDateStart(String dateStart) {
-        this.dateStart = dateStart;
-    }
-
-    public String getDateEnd() {
-        return dateEnd;
-    }
-
-    public void setDateEnd(String dateEnd) {
-        this.dateEnd = dateEnd;
-    }
-
-    public String getNameTask() {
-        return nameTask;
-    }
-
-    public void setNameTask(String nameTask) {
-        this.nameTask = nameTask;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Context getContext() {
-        return context;
-    }
-
-    public void setContext(Context context) {
-        this.context = context;
-
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
 
+    public int getStatus(){
+        try {
+            if(this.task.has("status"))
+                return this.task.getInt("status");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+    public int getUserId(){
+        try {
+            if(this.task.has("user_id"))
+                return this.task.getInt("user_id");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public int getGroupId(){
+        try {
+            if(this.task.has("group_id"))
+                return this.task.getInt("group_id");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public int getMAnagerId(){
+        try {
+            if(this.task.has("manager_id"))
+                return this.task.getInt("manager_id");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public String getDescription(){
+        try {
+            if(this.task.has("description"))
+                return this.task.getString("description");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getTimeDateEnd(){
+        try {
+            if(this.task.has("date_end"))
+                return this.task.getString("date_end");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getTimeDateStart(){
+        try {
+            if(this.task.has("date_start"))
+                return this.task.getString("date_start");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void setIdTask(long idTask){
+        try {
+            this.task.put("id",idTask);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setNameTask(String nameTask){
+
+
+        try {
+            this.task.put("name",nameTask);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+
+    public void setStatus(int status){
+        try {
+            this.task.put("status",status);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    public void setUserId(int userId){
+        try {
+
+            this.task.put("user_id",userId);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setGroupId(int groupId){
+        try {
+
+            this.task.put("group_id",groupId);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void setMAnagerId(int mAnagerId){
+        try {
+
+            this.task.put("manager_id",mAnagerId);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void setDescription(String description){
+        try {
+
+            this.task.put("description",description);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void setTimeDateEnd(String timeDateEnd){
+        try {
+            this.task.put("date_end",timeDateEnd);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void setTimeDateStart(String timeDateStart) {
+        try {
+
+            this.task.put("date_start", timeDateStart);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+
+    }
 }
+
+
+
+
+
