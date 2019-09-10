@@ -34,10 +34,10 @@ public class Task implements Parcelable {
         this.task = task;
     }
 
-    public int getIdTask(){
+    public long getIdTask(){
         try {
             if(this.task.has("id"))
-                return this.task.getInt("id");
+                return this.task.getLong("id");
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -114,8 +114,8 @@ public class Task implements Parcelable {
 
     public String getTimeDateEnd(){
         try {
-            if(this.task.has("date_end"))
-                return this.task.getString("date_end");
+            if(this.task.has("time_date_end"))
+                return this.task.getString("time_date_end");
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -125,8 +125,8 @@ public class Task implements Parcelable {
 
     public String getTimeDateStart(){
         try {
-            if(this.task.has("date_start"))
-                return this.task.getString("date_start");
+            if(this.task.has("time_date_start"))
+                return this.task.getString("time_date_start");
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -228,6 +228,10 @@ public class Task implements Parcelable {
 
 
     }
+
+
+
+
 
 
     @Override

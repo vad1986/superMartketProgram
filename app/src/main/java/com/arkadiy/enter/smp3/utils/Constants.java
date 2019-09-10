@@ -27,6 +27,12 @@ public class Constants {
     public static int MAIN_MANAGER= 8;
 
 
+    public static int SET_IN_OCLOCK = 1;
+    public static int SET_OUT_OCLOCK = 2;
+    public static String RESPONSE_CODE = "response_code";
+
+
+
 
 
 

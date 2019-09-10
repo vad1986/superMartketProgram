@@ -2,14 +2,18 @@ package com.arkadiy.enter.smp3.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListAdapter;
@@ -19,11 +23,13 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.arkadiy.enter.smp3.R;
-import com.arkadiy.enter.smp3.config.AppConfig;
+import com.arkadiy.enter.smp3.config.ResponseCode;
+import com.arkadiy.enter.smp3.dataObjects.User;
 import com.arkadiy.enter.smp3.dataObjects.Users;
-import com.arkadiy.enter.smp3.services.UserServices;
-import com.arkadiy.enter.smp3.utils.Constants;
+import com.arkadiy.enter.smp3.utils.ConstantsJson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -31,44 +37,42 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity  implements ActivityCompat.OnRequestPermissionsResultCallback {
 
+    private static Handler handler;
+    private static Context context;
     private Button exitButton;
-    private Button addNewUserButton;
+    //private Button addNewUserButton;
     private Button signingAClockButton;
     private Button tasksButton;
     private Button addNewTaskButton;
+    private Button adminOptionsButton;
+
     private ListView promoListView;
     private ListAdapter listAdapter;
     private JSONObject jsonObject;
     private RequestQueue requestQueue;
     public static HashMap<Integer,ArrayList<Users>> USERS;
     static final Integer LOCATION = 0x1;
+    public JSONArray globalRoles;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         USERS =  new HashMap<>();
         setContentView(R.layout.activity_main);
-        String[] promoListString = {"Arkadiy","Vadim","Haim","Gil"};
         exitButton = (Button)findViewById(R.id.exit_Button);
-        addNewUserButton = (Button)findViewById(R.id.addNewUser_Button);
+        //addNewUserButton = (Button)findViewById(R.id.addNewUser_Button);
         signingAClockButton = (Button)findViewById(R.id.signingAClock_Button);
         tasksButton = (Button)findViewById(R.id.tasks_Button);
         addNewTaskButton = (Button)findViewById(R.id.addNewTask_Button);
-//        Toolbar toolbar = findViewById(R.id.toolbar_MainActivity);
-//        toolbar.setTitle("NAME");
-//        toolbar.setLogo(R.drawable.profil);
-//        toolbar.getContentInsetStartWithNavigation();
-//        setSupportActionBar(toolbar);
-        requestQueue = Volley.newRequestQueue(this);
-        UserServices.sendData(AppConfig.GET_MY_USERS,null,requestQueue,MainActivity.this,Constants.METHOD_GET,null);
+        adminOptionsButton = (Button)findViewById(R.id.admin_options);
+        User.init(MainActivity.this);
 
+        context = MainActivity.this;
 
+        getMyUsers();
         //here start all gps content
-
         //here ends gps
-
-
-
         tasksButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,7 +80,6 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
                 startActivity(intent);
             }
         });
-
         signingAClockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,15 +87,13 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
                 startActivity(intent);
             }
         });
-
-        addNewUserButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent( MainActivity.this,AddNewUserActivity.class);
-                startActivity(intent);
-            }
-        });
-
+//        addNewUserButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent( MainActivity.this,AddNewUserActivity.class);
+//                startActivity(intent);
+//            }
+//        });
         addNewTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,12 +104,19 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
         exitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UserServices.sendData(AppConfig.LOGOUT_SERVER,jsonObject,requestQueue,MainActivity.this,Constants.METHOD_POST,null);
-
+//                DataServices.sendData(AppConfig.LOGOUT_SERVER,jsonObject,requestQueue,
+//                MainActivity.this,Constants.METHOD_POST,null);
+                User.logOut();
             }
         });
 
-
+        adminOptionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,AdminActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -129,7 +137,11 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
 
 
     }
+    private void getMyUsers(){
+        getHendlerMain();
+        requestQueue = Volley.newRequestQueue(this);
 
+    }
     private void turnGPSOn(){
         String provider = Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
 
@@ -180,6 +192,43 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
             Toast.makeText(this, "" + permission + " is already granted.", Toast.LENGTH_SHORT).show();
         }
     }
+
+
+    public static void getHendlerMain(){
+        handler=new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                try {
+                    Bundle bundle = msg.getData();
+                    JSONObject json;
+                    if(bundle.getString("json")!=null)
+                        json =new JSONObject(bundle.getString("json"));
+                    else return false;
+
+                    int responseCode=json.getInt(ConstantsJson.RESPONSE_CODE);
+
+                    switch (responseCode){
+                        case ResponseCode.GET_MY_USERS:
+                            Log.d("Secssec","5555555");
+                            break;
+//                        case ResponseCode.ERROR:
+//                            Intent intent = new Intent(context, LogInActivity.class );
+//                            //aintent.putExtra("globalRoles", String.valueOf(json.getJSONArray(ConstantsJson.GLOBAL_ROLES)));
+//                            context.startActivity(intent);
+//                            break;
+
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                return true;
+            }
+        });
+    }
+
 
 
 }

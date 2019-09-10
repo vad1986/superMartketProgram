@@ -3,8 +3,10 @@ package com.arkadiy.enter.smp3.activities;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,11 +20,10 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.arkadiy.enter.smp3.R;
-import com.arkadiy.enter.smp3.config.AppConfig;
+import com.arkadiy.enter.smp3.dataObjects.Department;
+import com.arkadiy.enter.smp3.dataObjects.Store;
 import com.arkadiy.enter.smp3.dataObjects.Task;
-import com.arkadiy.enter.smp3.dataObjects.Users;
-import com.arkadiy.enter.smp3.services.UserServices;
-import com.arkadiy.enter.smp3.utils.Constants;
+import com.arkadiy.enter.smp3.dataObjects.User;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,14 +39,14 @@ public class AddNewTaskActivity extends AppCompatActivity  {
     private Spinner workersSpinner;
     private Spinner departmantsSpinner;
     private ArrayList<String> workersItemsList;
-    private ArrayList<String> departmentsItemsList;
+    private ArrayList<Department> departmentsItemsList;
     private ArrayAdapter arrayAdapterWorkers;
     private ArrayAdapter arrayAdapterDepartments;
     private Task task;
     private RequestQueue requestQueue;
     private Object[] array;
-    private ArrayList<Users>currentUsers;
-    Users selecteduser;
+    private ArrayList<User>currentUsers;
+    User selecteduser;
 
 
 
@@ -54,7 +55,7 @@ public class AddNewTaskActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_task);
         toBuildActivity();
-        getDepartmants();
+        getDepartmants(User.getDepartmentId());
 
         startDateTask.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,8 +83,9 @@ public class AddNewTaskActivity extends AppCompatActivity  {
                 String name = nameTaskEditText.getText().toString() ;
                 String dec = taskDecriptionEditText.getText().toString();
                 task = new Task(selecteduser.getUserId(),start,end,name,dec);
+//                DataServices.sendTask(task.getTask(),requestQueue,AddNewTaskActivity.this);
+                resetActivity();
 
-                UserServices.sendTask(task.getTask(),requestQueue,AddNewTaskActivity.this);
             }
         });
 
@@ -92,8 +94,13 @@ public class AddNewTaskActivity extends AppCompatActivity  {
         departmantsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                   int departmentNumber= LogInActivity.MYDEPARTMENTS.get(array[i]); //getting department number from MYDEPARTMENTS as integer
-                    setUsersByDepartmentSelected(departmentNumber); //sending this integer to method
+                   //int departmentNumber= Store.departments.get(i).getId(); //getting department number from MYDEPARTMENTS as integer
+                   //int departmentNumber = Store.departments.get(i).getId(); //getting department number from MYDEPARTMENTS as integer
+                    Log.i("ADD NEW TASK", String.valueOf(i));
+                    if(Store.departments.get(i).getUsers() != null){
+
+                        setUsersByDepartmentSelected(Store.departments.get(i)); //sending this integer to method
+                    }
                 }
 
             @Override
@@ -106,7 +113,6 @@ public class AddNewTaskActivity extends AppCompatActivity  {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
               selecteduser= currentUsers.get(i); //selected user
                 Toast.makeText(getApplicationContext(),String.valueOf(selecteduser.getUserId()),Toast.LENGTH_LONG).show();
-
             }
 
             @Override
@@ -127,22 +133,50 @@ public class AddNewTaskActivity extends AppCompatActivity  {
     }
 //
 
-    private void setUsersByDepartmentSelected(int i){
+    private void setUsersByDepartmentSelected(Department departmentSelected){
         arrayAdapterWorkers.clear(); //empty all array
-        this.currentUsers=MainActivity.USERS.get(i);
-        int size = MainActivity.USERS.get(i).size();
-        for(int j = 0 ; j <size; j++){ //Run through all array of this department and get username
-            arrayAdapterWorkers.add(MainActivity.USERS.get(i).get(j).getUserName());
-            //MainActivity.USERS.get(i).get(j)  <--here you have user object
+        this.currentUsers = departmentSelected.getUsers();
+        if(currentUsers.size() > 0){
+            int size =currentUsers.size();
+            for(int j = 0 ; j <size; j++){ //Run through all array of this department and get username
+                arrayAdapterWorkers.add(currentUsers.get(j).getUserName());
+                //MainActivity.USERS.get(i).get(j)  <--here you have user object
             }
-                workersSpinner.setAdapter(arrayAdapterWorkers);
+            workersSpinner.setAdapter(arrayAdapterWorkers);
         }
 
-    private void getDepartmants() {
-        array= LogInActivity.MYDEPARTMENTS.keySet().toArray();
-        for (int i=0;i<array.length;i++){
-           arrayAdapterDepartments.add(array[i]);
-        }
+    }
+
+
+    private void getDepartmants(int myDepartment) {
+
+        arrayAdapterDepartments.add(Store.departments.get(myDepartment).getName());
+//        if(myRole < 6 ){
+//            myRole = myRole -1;
+//            arrayAdapterDepartments.add(Store.departments.get(myRole).getName());
+//        }else if (myRole == 6){
+//            myRole = myRole -1;
+//            for (int i = 0 ; i <Store.departments.size() ; i++){
+//
+//                arrayAdapterDepartments.add(Store.departments.get(i).getName());
+//
+//            }
+//        }
+         if(myDepartment != 7){
+            myDepartment = myDepartment -1;
+            for(int i =0 ; i < myDepartment - 1;  i++){
+                arrayAdapterDepartments.add(Store.departments.get(i).getName());
+            }
+         }
+// else if (myDepartment == 8){
+//            myDepartment = myDepartment -1;
+//
+//        }
+//        array= Store.departments.toArray();
+//        for (int i=0;i<User.getMyRole();i++){
+//           arrayAdapterDepartments.add(Store.departments.get(i).getName());
+//        }
+
         departmantsSpinner.setAdapter(arrayAdapterDepartments);
     }
 
@@ -195,9 +229,19 @@ public class AddNewTaskActivity extends AppCompatActivity  {
         creatNewTaskButton = (Button)findViewById(R.id.creatNewTask_button);
         workersItemsList = new ArrayList<>();
         departmentsItemsList = new ArrayList<>();
-        UserServices.sendData(AppConfig.GET_MY_USERS,null,requestQueue,AddNewTaskActivity.this,Constants.METHOD_GET,null);
-        arrayAdapterDepartments = new ArrayAdapter<String>(AddNewTaskActivity.this,android.R.layout.simple_spinner_dropdown_item,departmentsItemsList);
+//        DataServices.sendData(AppConfig.GET_MY_USERS,null,requestQueue,AddNewTaskActivity.this,Constants.METHOD_GET,null);
+        arrayAdapterDepartments = new ArrayAdapter<Department>(AddNewTaskActivity.this,android.R.layout.simple_spinner_dropdown_item,departmentsItemsList);
         arrayAdapterWorkers = new ArrayAdapter<String>(AddNewTaskActivity.this,android.R.layout.simple_spinner_dropdown_item,workersItemsList);
 
+    }
+    private void resetActivity() {
+
+
+        startDateTask.setText("");
+        endDateTask.setText("");
+        nameTaskEditText.setText("");
+        taskDecriptionEditText.setText("");
+        Intent intent = new Intent(AddNewTaskActivity.this,TasksActivity.class);
+        startActivity(intent);
     }
 }

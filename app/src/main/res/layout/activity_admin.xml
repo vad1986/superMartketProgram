@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MainActivity">
-
+    tools:context=".activities.AdminActivity">
 
     <TableLayout
         android:id="@+id/tableButton"
@@ -15,25 +14,43 @@
         android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
         android:layout_centerInParent="true">
+         <TableRow
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
 
+             <Button
+                android:id="@+id/addNewUser_Btn"
+                android:layout_width="150dp"
+                android:layout_height="120dp"
+                android:layout_weight="1"
+                android:text="Add new user" />
+
+             <Button
+                 android:id="@+id/editUser_Btn"
+                 android:layout_width="150dp"
+                 android:layout_height="120dp"
+                 android:layout_weight="1"
+                 android:text="Edit user" />
+
+    </TableRow>
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <Button
-                android:id="@+id/tasks_Button"
+                android:id="@+id/editDepartment_Btn"
                 android:layout_width="150dp"
                 android:layout_height="120dp"
-                android:layout_alignParentBottom="true"
                 android:layout_weight="1"
-                android:text="Tasks" />
+                android:text="Edit depatrments" />
 
             <Button
-                android:id="@+id/signingAClock_Button"
+                android:id="@+id/createDepartments_Btn"
                 android:layout_width="150dp"
                 android:layout_height="120dp"
                 android:layout_weight="1"
-                android:text="Signing a clock" />
+                android:text="create department" />
+
         </TableRow>
 
         <TableRow
@@ -41,56 +58,35 @@
             android:layout_height="match_parent">
 
             <Button
-                android:id="@+id/communication_Button"
+                android:id="@+id/createAlert_Btn"
                 android:layout_width="150dp"
                 android:layout_height="120dp"
                 android:layout_weight="1"
-                android:text="communication" />
-
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                android:text="Create Alert" />
 
             <Button
-                android:id="@+id/addNewTask_Button"
+                android:id="@+id/editAlert_Btn"
                 android:layout_width="150dp"
                 android:layout_height="120dp"
                 android:layout_weight="1"
-                android:text="Add new task" />
+                android:text="Edit alert" />
 
-            <Button
-                android:id="@+id/exit_Button"
-                android:layout_width="150dp"
-                android:layout_height="120dp"
-                android:layout_weight="1"
-                android:text="exit" />
         </TableRow>
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <Button
-                android:id="@+id/admin_options"
+                android:id="@+id/GPS_conf_Btn"
                 android:layout_width="150dp"
                 android:layout_height="120dp"
                 android:layout_weight="1"
-                android:text="Admin options" />
+                android:text="Create Alert" />
 
-            <Button
-                android:id="@+id/manager_options"
-                android:layout_width="150dp"
-                android:layout_height="120dp"
-                android:layout_weight="1"
-                android:text="Manager options" />
         </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
     </TableLayout>
+
 
 
 </RelativeLayout>

@@ -10,7 +10,7 @@ public class Users {
 
 
     public Users(String userName,String privateKey,int userId) {
-        userId=userId;
+        userName=userName;
         privateKey=privateKey;
         userId=userId;
     }

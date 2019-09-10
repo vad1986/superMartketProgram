@@ -5,7 +5,7 @@ import android.content.Context;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.arkadiy.enter.smp3.config.AppConfig;
-import com.arkadiy.enter.smp3.services.UserServices;
+import com.arkadiy.enter.smp3.services.DataServices;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,7 +54,12 @@ public class NewUser {
             jsonNewUser.put("telephone", this.getTelephone());
             jsonNewUser.put("email", this.getEmail());
             jsonNewUser.put("role", this.getRole());
-            UserServices.sendData(AppConfig.ADD_NEW_USER,jsonNewUser, requestQueue, context,1, null);
+            DataServices.sendData(AppConfig.ADD_NEW_USER,jsonNewUser, requestQueue, context,1, addNewUser->{
+
+
+
+                return true;
+            });
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -186,7 +191,7 @@ public class NewUser {
 //
 //
 //                try {
-//                    JSONObject j = new JSONObject(UserServices.readFile(FileConfig.USER_FILE,context));
+//                    JSONObject j = new JSONObject(DataServices.readFile(FileConfig.USER_FILE,context));
 //                    headers.put("user_name",j.getString("user_name"));
 //                    headers.put("private_key",j.getString("private_key"));
 //                    headers.put("user_id", String.valueOf(j.getInt("user_id")));

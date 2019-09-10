@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -16,12 +14,13 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.arkadiy.enter.smp3.DialogCloseTask;
-import com.arkadiy.enter.smp3.DialogDescriptionTask;
+import com.arkadiy.enter.smp3.dialogs.DialogCloseTask;
+import com.arkadiy.enter.smp3.dialogs.DialogDescriptionTask;
 import com.arkadiy.enter.smp3.R;
 import com.arkadiy.enter.smp3.config.AppConfig;
 import com.arkadiy.enter.smp3.dataObjects.Task;
-import com.arkadiy.enter.smp3.services.UserServices;
+import com.arkadiy.enter.smp3.dataObjects.User;
+import com.arkadiy.enter.smp3.services.DataServices;
 import com.arkadiy.enter.smp3.utils.Constants;
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -33,35 +32,26 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.arkadiy.enter.smp3.utils.Constants.TASKS;
-
 public class TasksActivity extends AppCompatActivity implements DialogCloseTask.DialogCloseTaskListener {
+
 
     private SwipeMenuListView listViewTask;
     private ArrayList<Task> itemsList;
-    private ArrayList<String> taskNames;
+    private static ArrayList<String> taskNames;
     private ArrayAdapter<Task> adapter;
     private TextView amountOfTasksTextView;
-    private boolean colserTask =false;
     private Button creatTask;
-    private Task[] task;
     private static final String TAG = "TasksActivity";
     private RequestQueue requestQueue;
 
-    private  final Handler hanleTasksFromServer = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            Bundle bundle = msg.getData();
-            itemsList= bundle.getParcelableArrayList(TASKS);
-            fillNames(itemsList);
-           afterGotTasks();
-        }
-    };
+
 
     private void fillNames(ArrayList<Task> itemsList) {
         for (int i = 0; i < itemsList.size(); i++) {
             taskNames.add(itemsList.get(i).getNameTask());
+
         }
+        this.itemsList = itemsList;
     }
 
 
@@ -69,17 +59,21 @@ public class TasksActivity extends AppCompatActivity implements DialogCloseTask.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tasks);
-        final String[] listViewString = {"Empty the trash","To make a drink","Check the drinking stock","Perform alcohol filling","Check out alcohol inventory","To order electrical appliances","Check for sausages","Arrange office","Submit availability for next week","Transfer money to the cashier first","Download the junk","Arrange office","Submit availability for next week","Transfer money to the cashier first","Download the junk","Arrange office","Submit availability for next week","Transfer money to the cashier first","Download the junk"};
         taskNames=new ArrayList<>();
         requestQueue = Volley.newRequestQueue(this);
         creatTask = (Button)findViewById(R.id.creatNewTask_button);
         listViewTask = (SwipeMenuListView) findViewById(R.id.listViewTask);
         amountOfTasksTextView = (TextView)findViewById(R.id.amountOfTasks_TextView);
         itemsList = new ArrayList<>();
-        UserServices.getTasksArray(AppConfig.GET_USER_TASKS,requestQueue,TasksActivity.this,0,hanleTasksFromServer);
+        //User.init(TasksActivity.this);
 
-
-
+        User.getTasksFromServer(TasksActivity.this,handler->{
+            if(handler.getData()!=null){
+                fillNames(User.myTasks);
+                afterGotTasks();
+            }
+            return true;
+        });
 
 
     }
@@ -87,12 +81,13 @@ public class TasksActivity extends AppCompatActivity implements DialogCloseTask.
     public void applyText(String reason ,String tag,int position) {
 
         JSONObject taskClose = new JSONObject();
-        String url = AppConfig.MAIN_SERVER_IP+AppConfig.MAIN_SERVER_PORT+AppConfig.CLOSE_TASK;
+        String url = AppConfig.CLOSE_TASK;
         try {
+            //User.closeTask(position);
             taskClose.put("task_id",itemsList.get(position).getIdTask());
             taskClose.put("close_description",itemsList.get(position).getDescription());
 
-            UserServices.sendData(url,taskClose,requestQueue,TasksActivity.this,Constants.METHOD_POST,null);
+            DataServices.sendData(url,taskClose,requestQueue,TasksActivity.this,Constants.METHOD_POST,null);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -108,6 +103,7 @@ public class TasksActivity extends AppCompatActivity implements DialogCloseTask.
     private void afterGotTasks(){
 
         adapter = new ArrayAdapter(TasksActivity.this,android.R.layout.simple_list_item_1,taskNames);
+        //adapter = new ArrayAdapter(TasksActivity.this,android.R.layout.simple_list_item_1);
         listViewTask.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         amountOfTasksTextView.setText("Amount of open tasks: "+Integer.toString(listViewTask.getCount()));
@@ -175,7 +171,7 @@ public class TasksActivity extends AppCompatActivity implements DialogCloseTask.
                     case 0:
                         // open
                         Log.d(TAG,"onMenuItemClickL click item " + index);
-                        DialogDescriptionTask dialogDescriptionTask = new DialogDescriptionTask(itemsList.get(position).getDescription());
+                        DialogDescriptionTask dialogDescriptionTask = new DialogDescriptionTask(itemsList.get(position).getDescription(),itemsList.get(position).getTimeDateStart(),itemsList.get(position).getTimeDateEnd());
                         dialogDescriptionTask.showNow(getSupportFragmentManager(),String.valueOf(itemsList.get(position).getNameTask()));
                         break;
                     case 1:

@@ -11,10 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="25dp"
-        android:text="Enter reason: "
         android:paddingLeft="25dp"
         android:layout_centerHorizontal="true"
         />
+
 
     <EditText
         android:id="@+id/commentTask_EditText"
@@ -22,7 +22,6 @@
         android:layout_height="180dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="47dp"
-        android:layout_below="@+id/taskName_TextView"
         android:background="@drawable/border_style"/>
 
 

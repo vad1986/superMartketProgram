@@ -1,4 +1,4 @@
-package com.arkadiy.enter.smp3;
+package com.arkadiy.enter.smp3.dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -11,34 +11,35 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import com.arkadiy.enter.smp3.R;
+
 @SuppressLint("ValidFragment")
-public class DialogCloseTask extends AppCompatDialogFragment {
-    private EditText commentTaskEditText;
-    private DialogCloseTaskListener listener;
-    private int position;
-    public DialogCloseTask(int position){this.position = position;}
+public class DialogforgotPassword extends AppCompatDialogFragment  {
+    private EditText forgotPasswordTaskEditText;
+    private DialogforgotPassword.DialogforgotPasswordListener listener;
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.layout_dailog_close,null);
-        builder.setView(view).setTitle("Task name: "+getTag())
+        View view = inflater.inflate(R.layout.layout_dialog_forgot_password,null);
+        builder.setView(view).setTitle("User Name "+getTag())
                 .setNegativeButton("CENCEL", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
                     }
                 })
-                .setPositiveButton("CLOSE TASK", new DialogInterface.OnClickListener() {
+                .setPositiveButton("SEND", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String tmpStr = commentTaskEditText.getText().toString().trim();
-                        listener.applyText(tmpStr , getTag(),position);
+                        String email = forgotPasswordTaskEditText.getText().toString();
+                        listener.applyText(email);
 
                     }
                 });
-        commentTaskEditText = view.findViewById(R.id.commentTask_EditText);
+        forgotPasswordTaskEditText = view.findViewById(R.id.forgotPasswordTask_EditText);
 
         return builder.create();
 
@@ -49,14 +50,14 @@ public class DialogCloseTask extends AppCompatDialogFragment {
         super.onAttach(context);
 
         try {
-            listener = (DialogCloseTaskListener)context;
+            listener = (DialogforgotPasswordListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()+" must implement DialogCloseTaskListener");
         }
     }
 
-    public interface DialogCloseTaskListener{
-        void applyText(String reason , String tag ,int position);
+    public interface DialogforgotPasswordListener{
+        void applyText(String email );
     }
-}
 
+}

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SMP3</string>
+    <string name="Set_departments">Set departments</string>
+    <string name="title_activity_forgot_password">forgotPassword</string>
 </resources>
