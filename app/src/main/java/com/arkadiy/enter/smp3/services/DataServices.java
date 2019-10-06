@@ -32,6 +32,8 @@ public class DataServices {
     private static ArrayList<Task> tasks = null;
     private static String punch_clock;
     private static Context context;
+    public static final String ANSI_RED = "\u001B[31m";
+
     public static final Handler inserUserHandler = new Handler() {
 
         @Override
@@ -48,9 +50,22 @@ public class DataServices {
 
     public static void sendData(final String url, final JSONObject jsonObject, final RequestQueue requestQueue,
                                 final Context context, int method, IHandler handler) {
+        System.out.println("send data     "+ url);
         JsonObjectRequest jsonObjReq = null;
         DataServices.context = context;
-
+        if(jsonObject != null){
+            System.out.println();
+            System.out.println("===========================================");
+            System.out.println("\n\n"+" JSON OBJECT SEND TO SERVER \n\n");
+            System.out.println(jsonObject.toString());
+            System.out.println("===========================================");
+        }else {
+            System.out.println();
+            System.out.println("===========================================");
+            System.out.println("\n\n"+" JSON OBJECT SEND TO SERVER \n\n");
+            System.out.println("JSON OBJECT IS NULL");
+            System.out.println("===========================================");
+        }
 
         jsonObjReq = new JsonObjectRequest(method, url, jsonObject,
                 new Response.Listener<JSONObject>() {
@@ -60,15 +75,21 @@ public class DataServices {
                         try {
 
                             JSONObject jsonResponse = new JSONObject(String.valueOf(response));
+                            System.out.println();
+                            System.out.println("=============================================================");
+                            System.out.println("\n\n"+" ==RESPONSE FROM SERVER ==\n\n");
+                            System.out.println(response);
+                            System.out.println("=============================================================");
+                            if (handler!=null){
 
-                            sendDataToHandler(handler, String.valueOf(response));
+                                sendDataToHandler(handler, String.valueOf(response));
+                            }
 
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        response.hashCode();
-                        response.toString();
+
                     }
                 }, new Response.ErrorListener() {
 
@@ -160,6 +181,7 @@ public class DataServices {
         Bundle bundle = new Bundle();
 
         if(handler!=null){
+
             bundle.putString("json",json);
             msg.setData(bundle);
             handler.sendMessage(msg);

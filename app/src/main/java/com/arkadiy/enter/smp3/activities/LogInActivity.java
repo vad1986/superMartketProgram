@@ -2,7 +2,7 @@ package com.arkadiy.enter.smp3.activities;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,6 +47,7 @@ public class LogInActivity extends AppCompatActivity implements DialogforgotPass
 
 
         DEPARTMANTS = new HashMap<>();
+        App.setContext(this);
         MYDEPARTMENTS=new HashMap<>();
         userName = (EditText)findViewById(R.id.userName_editText);
         password = (EditText)findViewById(R.id.password_editText);
@@ -54,7 +55,7 @@ public class LogInActivity extends AppCompatActivity implements DialogforgotPass
         forgotPasswordTextVView = (TextView)findViewById(R.id.forgotPasswordTextView);
         //requestQueue = Volley.newRequestQueue(this);
         Context context = LogInActivity.this;
-        User.init(context);
+
 //        String privateKey=dataBaseHelper.ifExist();
 //        if (privateKey!=null){
 //            DataServices.getUserIntoDataBase(user);

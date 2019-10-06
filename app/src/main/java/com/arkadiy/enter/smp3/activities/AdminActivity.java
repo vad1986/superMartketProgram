@@ -2,11 +2,12 @@ package com.arkadiy.enter.smp3.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
 import com.arkadiy.enter.smp3.R;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class AdminActivity extends AppCompatActivity {
 
@@ -16,6 +17,7 @@ public class AdminActivity extends AppCompatActivity {
     private Button createDepartment_Btn;
     private Button createAlert_Btn;
     private Button editAlert_Btn;
+    private Button GPS_conf_Btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +29,8 @@ public class AdminActivity extends AppCompatActivity {
         createDepartment_Btn = (Button)findViewById(R.id.createDepartments_Btn);
         createAlert_Btn = (Button)findViewById(R.id.createAlert_Btn);
         editAlert_Btn = (Button)findViewById(R.id.editAlert_Btn);
+        GPS_conf_Btn = (Button)findViewById(R.id.GPS_conf_Btn);
+        App.setContext(this);
 
         addNewUser_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,16 +64,21 @@ public class AdminActivity extends AppCompatActivity {
         createAlert_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(AdminActivity.this, CreateAlertActivity.class);
+                startActivity(intent);
             }
         });
 
-        editAlert_Btn.setOnClickListener(new View.OnClickListener() {
+        GPS_conf_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                Intent intent = new Intent(AdminActivity.this, GPSActivity.class);
+                startActivity(intent);
+
             }
         });
+
 
     }
 }

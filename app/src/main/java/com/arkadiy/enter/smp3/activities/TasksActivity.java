@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -14,12 +13,12 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.arkadiy.enter.smp3.dialogs.DialogCloseTask;
-import com.arkadiy.enter.smp3.dialogs.DialogDescriptionTask;
 import com.arkadiy.enter.smp3.R;
 import com.arkadiy.enter.smp3.config.AppConfig;
 import com.arkadiy.enter.smp3.dataObjects.Task;
 import com.arkadiy.enter.smp3.dataObjects.User;
+import com.arkadiy.enter.smp3.dialogs.DialogCloseTask;
+import com.arkadiy.enter.smp3.dialogs.DialogDescriptionTask;
 import com.arkadiy.enter.smp3.services.DataServices;
 import com.arkadiy.enter.smp3.utils.Constants;
 import com.baoyz.swipemenulistview.SwipeMenu;
@@ -32,17 +31,20 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 public class TasksActivity extends AppCompatActivity implements DialogCloseTask.DialogCloseTaskListener {
 
 
-    private SwipeMenuListView listViewTask;
+    private static SwipeMenuListView listViewTask;
     private ArrayList<Task> itemsList;
     private static ArrayList<String> taskNames;
-    private ArrayAdapter<Task> adapter;
+    private  static ArrayAdapter<Task> adapter;
     private TextView amountOfTasksTextView;
     private Button creatTask;
     private static final String TAG = "TasksActivity";
     private RequestQueue requestQueue;
+    private static SwipeMenuCreator creator;
 
 
 
@@ -51,7 +53,7 @@ public class TasksActivity extends AppCompatActivity implements DialogCloseTask.
             taskNames.add(itemsList.get(i).getNameTask());
 
         }
-        this.itemsList = itemsList;
+        //this.itemsList = itemsList;
     }
 
 
@@ -59,12 +61,13 @@ public class TasksActivity extends AppCompatActivity implements DialogCloseTask.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tasks);
+        setUserHandler();
         taskNames=new ArrayList<>();
         requestQueue = Volley.newRequestQueue(this);
         creatTask = (Button)findViewById(R.id.creatNewTask_button);
         listViewTask = (SwipeMenuListView) findViewById(R.id.listViewTask);
         amountOfTasksTextView = (TextView)findViewById(R.id.amountOfTasks_TextView);
-        itemsList = new ArrayList<>();
+       // itemsList = new ArrayList<>();
         //User.init(TasksActivity.this);
 
         User.getTasksFromServer(TasksActivity.this,handler->{
@@ -76,7 +79,33 @@ public class TasksActivity extends AppCompatActivity implements DialogCloseTask.
         });
 
 
+        App.setContext(this);
+
     }
+
+    private void setUserHandler() {
+    User.setTaskHandler(handler->{
+
+            TasksActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        String taskString= handler.getData().getString("task");
+                        JSONObject jsonTask=new JSONObject(taskString);
+                        Task task=new Task(jsonTask);
+                        taskNames.add(task.getNameTask());
+                        adapter.notifyDataSetChanged();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+        return false;
+    });
+
+    }
+
     @Override
     public void applyText(String reason ,String tag,int position) {
 
@@ -84,15 +113,18 @@ public class TasksActivity extends AppCompatActivity implements DialogCloseTask.
         String url = AppConfig.CLOSE_TASK;
         try {
             //User.closeTask(position);
-            taskClose.put("task_id",itemsList.get(position).getIdTask());
-            taskClose.put("close_description",itemsList.get(position).getDescription());
+           // taskClose.put("task_id",itemsList.get(position).getIdTask());
+            taskClose.put("task_id",User.myTasks.get(position).getIdTask());
+            taskClose.put("close_description",User.myTasks.get(position).getDescription());
+           // taskClose.put("close_description",itemsList.get(position).getDescription());
 
             DataServices.sendData(url,taskClose,requestQueue,TasksActivity.this,Constants.METHOD_POST,null);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        itemsList.remove(position);
+        //itemsList.remove(position);
+        User.myTasks.remove(position);
         taskNames.remove(position);
         listViewTask.setAdapter(adapter);
         amountOfTasksTextView.setText("Amount of open tasks: "+Integer.toString(listViewTask.getCount()));
@@ -171,13 +203,13 @@ public class TasksActivity extends AppCompatActivity implements DialogCloseTask.
                     case 0:
                         // open
                         Log.d(TAG,"onMenuItemClickL click item " + index);
-                        DialogDescriptionTask dialogDescriptionTask = new DialogDescriptionTask(itemsList.get(position).getDescription(),itemsList.get(position).getTimeDateStart(),itemsList.get(position).getTimeDateEnd());
-                        dialogDescriptionTask.showNow(getSupportFragmentManager(),String.valueOf(itemsList.get(position).getNameTask()));
+                        DialogDescriptionTask dialogDescriptionTask = new DialogDescriptionTask(User.myTasks.get(position).getDescription(),User.myTasks.get(position).getTimeDateStart(),User.myTasks.get(position).getTimeDateEnd());
+                        dialogDescriptionTask.showNow(getSupportFragmentManager(),String.valueOf(User.myTasks.get(position).getNameTask()));
                         break;
                     case 1:
                         // delete
                         DialogCloseTask dialogCloseTask = new DialogCloseTask(position);
-                        dialogCloseTask.show(getSupportFragmentManager(),String.valueOf(itemsList.get(position).getNameTask()));
+                        dialogCloseTask.show(getSupportFragmentManager(),String.valueOf(User.myTasks.get(position).getNameTask()));
                         break;
                 }
                 // false : close the menu; true : not close the menu

@@ -7,10 +7,9 @@ import android.location.Criteria;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
@@ -18,6 +17,8 @@ import com.android.volley.toolbox.Volley;
 import com.arkadiy.enter.smp3.R;
 import com.arkadiy.enter.smp3.config.AppConfig;
 import com.arkadiy.enter.smp3.config.ResponseCode;
+import com.arkadiy.enter.smp3.dataObjects.CustomAdapterHours;
+import com.arkadiy.enter.smp3.dataObjects.DayWork;
 import com.arkadiy.enter.smp3.dataObjects.IHandler;
 import com.arkadiy.enter.smp3.dataObjects.User;
 import com.arkadiy.enter.smp3.services.GpsChecker;
@@ -27,10 +28,14 @@ import com.arkadiy.enter.smp3.utils.ConstantsJson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 public class SigningAClockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
     private TextView enterDataTextView;
@@ -46,7 +51,15 @@ public class SigningAClockActivity extends AppCompatActivity implements Activity
     Handler handler;
     private int in_out;
     private IHandler iHandler;
-    private File file;
+    private String enterTime;
+    private String endTime;
+    private String sumTime;
+    private int day;
+    private DayWork dayWork;
+    private ArrayList<DayWork> listWork;
+    private ListView weekWork;
+    private CustomAdapterHours customAdapterHours;
+
 
 
     @Override
@@ -58,7 +71,7 @@ public class SigningAClockActivity extends AppCompatActivity implements Activity
 
 
         initGPS();// build GPS items
-
+        listWork = new ArrayList<DayWork>();
         enterDataTextView = (TextView) findViewById(R.id.enterData_TextView);
         exitDataTextView = (TextView) findViewById(R.id.exitData_TextView);
         enterButton = (Button) findViewById(R.id.enter_button);
@@ -66,7 +79,7 @@ public class SigningAClockActivity extends AppCompatActivity implements Activity
         userName = (TextView) findViewById(R.id.UserName_TextView);
 //        userName.setText("Hello "+User.getUserName()); //TODO: FIX THIS
         requestQueue = Volley.newRequestQueue(this);
-
+        weekWork = (ListView)findViewById(R.id.hours_ListView);
         enterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,7 +87,9 @@ public class SigningAClockActivity extends AppCompatActivity implements Activity
 
                 //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 0.0f, this);
                 checkLocation();
-                sendToServer(getTime(), in_out);
+                enterTime = getTime();
+                day = getDay();
+                sendToServer(enterTime, in_out);
 
                 //sendToServer(getTime(), in_out);
 
@@ -86,10 +101,40 @@ public class SigningAClockActivity extends AppCompatActivity implements Activity
             public void onClick(View view) {
                 in_out = Constants.SET_OUT_OCLOCK;
                 checkLocation();
+                endTime = getTime();
+                sendToServer(endTime,in_out);
 //                exitDataTextView.setText("");
-//                exitDataTextView.setText(getTime());
+
+                exitDataTextView.setText(endTime);
+                setDayWork();
             }
         });
+        App.setContext(this);
+
+        customAdapterHours = new CustomAdapterHours(SigningAClockActivity.this,listWork);
+        weekWork.setAdapter(customAdapterHours);
+    }
+
+    private void setDayWork() {
+//        private DayWork dayWork;
+//        private ArrayList<DayWork> listWork;
+//        private ListView weekWork;
+//        private CustomAdapterHours customAdapterHours;
+        java.text.DateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        java.util.Date date1 = null;
+        java.util.Date date2 = null;
+        try {
+            date1 = df.parse(enterTime);
+            date2 = df.parse(endTime);
+        long diff = date2.getTime() - date1.getTime();;
+
+        sumTime = String.valueOf(diff);
+        dayWork = new DayWork(day,enterTime,endTime,sumTime);
+        listWork.add(dayWork);
+        customAdapterHours.notifyDataSetChanged();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -122,6 +167,12 @@ public class SigningAClockActivity extends AppCompatActivity implements Activity
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String StringDate = df.format(Calendar.getInstance().getTime());
         return StringDate;
+    }
+    public int getDay(){
+        Calendar c = Calendar.getInstance();
+        c.setTime(Calendar.getInstance().getTime());
+        int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+        return dayOfWeek;
     }
 
     private void initGPS() {
@@ -207,6 +258,7 @@ public class SigningAClockActivity extends AppCompatActivity implements Activity
         if (enterButton.getVisibility()== View.VISIBLE){
 
             enterDataTextView.setText("");
+            exitDataTextView.setText("");
             enterDataTextView.setText(date);
             enterButton.setVisibility(View.GONE);
             exitButton.setVisibility(View.VISIBLE);

@@ -10,10 +10,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListAdapter;
@@ -45,6 +44,8 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
     private Button tasksButton;
     private Button addNewTaskButton;
     private Button adminOptionsButton;
+    private Button managerOptionsButton;
+    private Button alertButton;
 
     private ListView promoListView;
     private ListAdapter listAdapter;
@@ -60,63 +61,19 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
         super.onCreate(savedInstanceState);
         USERS =  new HashMap<>();
         setContentView(R.layout.activity_main);
-        exitButton = (Button)findViewById(R.id.exit_Button);
-        //addNewUserButton = (Button)findViewById(R.id.addNewUser_Button);
-        signingAClockButton = (Button)findViewById(R.id.signingAClock_Button);
-        tasksButton = (Button)findViewById(R.id.tasks_Button);
-        addNewTaskButton = (Button)findViewById(R.id.addNewTask_Button);
-        adminOptionsButton = (Button)findViewById(R.id.admin_options);
-        User.init(MainActivity.this);
+
+
+
 
         context = MainActivity.this;
 
         getMyUsers();
         //here start all gps content
         //here ends gps
-        tasksButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,TasksActivity.class);
-                startActivity(intent);
-            }
-        });
-        signingAClockButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,SigningAClockActivity.class);
-                startActivity(intent);
-            }
-        });
-//        addNewUserButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent( MainActivity.this,AddNewUserActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-        addNewTaskButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,AddNewTaskActivity.class);
-                startActivity(intent);
-            }
-        });
-        exitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                DataServices.sendData(AppConfig.LOGOUT_SERVER,jsonObject,requestQueue,
-//                MainActivity.this,Constants.METHOD_POST,null);
-                User.logOut();
-            }
-        });
+        checkRoll();
 
-        adminOptionsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,AdminActivity.class);
-                startActivity(intent);
-            }
-        });
+        App.setContext(this);
+
 
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -136,6 +93,103 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
 
 
 
+    }
+    private void checkRoll(){
+        int role = User.getMyRole();
+        switch (role){
+            case 1: createUserUI();
+            break;
+            case 2:
+                createUserUI();
+                createManagerUI();
+            break;
+            case 3:
+                createUserUI();
+                createMainManagerUI();
+            break;
+            case 4:
+                createUserUI();
+                createManagerUI();
+                createAdminUI();
+            break;
+
+        }
+    }
+    private void createUserUI(){
+        exitButton = (Button)findViewById(R.id.exit_Button);
+        signingAClockButton = (Button)findViewById(R.id.signingAClock_Button);
+        tasksButton = (Button)findViewById(R.id.tasks_Button);
+        addNewTaskButton = (Button)findViewById(R.id.addNewTask_Button);
+        alertButton = (Button)findViewById(R.id.communication_Button);
+        managerOptionsButton =(Button)findViewById(R.id.manager_options);
+        adminOptionsButton = (Button)findViewById(R.id.admin_options);
+        managerOptionsButton.setVisibility(View.GONE);
+        adminOptionsButton.setVisibility(View.GONE);
+        tasksButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,TasksActivity.class);
+                startActivity(intent);
+            }
+        });
+        signingAClockButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,SigningAClockActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        addNewTaskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,AddNewTaskActivity.class);
+                startActivity(intent);
+            }
+        });
+        alertButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,CommuicationActivity.class);
+                startActivity(intent);
+            }
+        });
+        exitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                DataServices.sendData(AppConfig.LOGOUT_SERVER,jsonObject,requestQueue,
+//                MainActivity.this,Constants.METHOD_POST,null);
+                User.logOut();
+            }
+        });
+    }
+    private void createMainManagerUI(){
+
+    }
+
+    private void createManagerUI(){
+        managerOptionsButton.setVisibility(View.VISIBLE);
+        managerOptionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+    }
+
+    private void createAdminUI(){
+
+
+        adminOptionsButton.setVisibility(View.VISIBLE);
+
+        adminOptionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,AdminActivity.class);
+                startActivity(intent);
+            }
+        });
     }
     private void getMyUsers(){
         getHendlerMain();
@@ -209,15 +263,12 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
 
                     switch (responseCode){
                         case ResponseCode.GET_MY_USERS:
-                            Log.d("Secssec","5555555");
                             break;
 //                        case ResponseCode.ERROR:
 //                            Intent intent = new Intent(context, LogInActivity.class );
 //                            //aintent.putExtra("globalRoles", String.valueOf(json.getJSONArray(ConstantsJson.GLOBAL_ROLES)));
 //                            context.startActivity(intent);
 //                            break;
-
-
                     }
 
                 } catch (JSONException e) {
@@ -228,7 +279,6 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
             }
         });
     }
-
 
 
 }

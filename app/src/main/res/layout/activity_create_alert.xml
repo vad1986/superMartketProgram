@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.CreateAlertActivity">
+
+
+    <EditText
+        android:id="@+id/name_new_alertEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        android:hint="Please enter name for new Alert"
+        android:inputType="textPersonName" />
+    <EditText
+        android:id="@+id/description_alertEditText"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/name_new_alertEditText"
+        android:hint="Please enter description for new Alert"
+        android:inputType="textPersonName"
+        android:background="@drawable/border_style"
+        />
+    <Button
+        android:id="@+id/send_new_alertButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+
+        android:text="creat new alert"
+        />
+</RelativeLayout>

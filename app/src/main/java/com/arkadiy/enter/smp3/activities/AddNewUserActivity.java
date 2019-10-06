@@ -2,7 +2,7 @@ package com.arkadiy.enter.smp3.activities;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,7 +43,7 @@ public class AddNewUserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_user);
 
-
+        App.setContext(this);
 
         addNewUserNameEditText = (EditText)findViewById(R.id.addNewUserName_editText);
         addNewUserPasswordEditText = (EditText)findViewById(R.id.addNewUserPassword_editText);

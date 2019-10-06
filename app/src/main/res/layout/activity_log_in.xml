@@ -16,8 +16,10 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="86dp"
         android:ems="10"
-        android:hint="User Name"
-        android:inputType="textPersonName" />
+        android:text="vadavid "
+    android:inputType="textPersonName" />
+
+    <!-- android:text="vadavid"-->
 
     <EditText
         android:id="@+id/password_editText"
@@ -29,8 +31,10 @@
         android:layout_marginTop="140dp"
         android:layout_marginBottom="0dp"
         android:ems="10"
-        android:hint="Password"
-        android:inputType="textPassword" />
+     android:text="vadavid86"
+
+    android:inputType="textPassword" />
+    <!-- android:text="vadavid86"-->
 
     <Button
         android:id="@+id/logIn_button"

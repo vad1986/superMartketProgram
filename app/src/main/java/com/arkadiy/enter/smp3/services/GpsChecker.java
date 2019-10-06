@@ -73,13 +73,15 @@ public class GpsChecker implements LocationListener, Runnable {
 //        Log.w("","Longtitude is--> "+location.getLongitude());
         Message msg = null;
         try {
+            setLatitude(String.valueOf(location.getLatitude()));
+            setLongtitude(String.valueOf(location.getLongitude()));
+
             String x="Latitude is--> "+location.getLatitude();
             String y="Longtitude is--> "+location.getLongitude();
 
-            setLatitude(String.valueOf(location.getLatitude()));
-            setLongtitude(String.valueOf(location.getLongitude()));
+
             Toast.makeText(this.context,"LATITUDE="+x+" LONGTITUDE="+y, Toast.LENGTH_LONG).show();
-            locationManager.removeUpdates(this);
+            //locationManager.removeUpdates(this);
 
 //            msg = new Message();
 //            Bundle bundle = new Bundle();
@@ -108,14 +110,14 @@ public class GpsChecker implements LocationListener, Runnable {
         if(handler!=null){
             bundle.putBoolean("json",true);
             msg.setData(bundle);
+            handler.sendMessage(msg);
 
-
-        }else {
+        }else{
 
             bundle.putBoolean("status",false);
             msg.setData(bundle);
+            handler.sendMessage(msg);
         }
-        handler.sendMessage(msg);
     }
 
     @Override

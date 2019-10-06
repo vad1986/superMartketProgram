@@ -19,7 +19,7 @@
         android:textSize="18dp"
         android:paddingLeft="25dp"/>
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/personalInformation_ScrollView"
         android:layout_width="match_parent"
         android:layout_height="185dp"
@@ -83,7 +83,7 @@
 
 
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 <TextView
     android:id="@+id/addrresOfUser_TextView"
     android:layout_width="wrap_content"
@@ -93,7 +93,7 @@
     android:textSize="18dp"
     android:paddingLeft="25dp"/>
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/addrresOfUser_ScrollView"
         android:layout_width="match_parent"
         android:layout_height="185dp"
@@ -154,7 +154,7 @@
                 android:inputType="textPersonName"
                 android:hint="Email" />
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 <RadioGroup
     android:id="@+id/sex_RadioGroup"

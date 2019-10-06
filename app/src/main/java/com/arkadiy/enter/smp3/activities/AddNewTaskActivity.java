@@ -5,8 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -38,16 +37,16 @@ public class AddNewTaskActivity extends AppCompatActivity  {
     private Button creatNewTaskButton;
     private Spinner workersSpinner;
     private Spinner departmantsSpinner;
-    private ArrayList<String> workersItemsList;
+    private ArrayList<User> workersItemsList;
     private ArrayList<Department> departmentsItemsList;
     private ArrayAdapter arrayAdapterWorkers;
     private ArrayAdapter arrayAdapterDepartments;
     private Task task;
     private RequestQueue requestQueue;
-    private Object[] array;
     private ArrayList<User>currentUsers;
     User selecteduser;
 
+    Department department;
 
 
     @Override
@@ -55,8 +54,9 @@ public class AddNewTaskActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_task);
         toBuildActivity();
-        getDepartmants(User.getDepartmentId());
 
+        App.setContext(this);
+        getDepartmants();
         startDateTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,8 +83,12 @@ public class AddNewTaskActivity extends AppCompatActivity  {
                 String name = nameTaskEditText.getText().toString() ;
                 String dec = taskDecriptionEditText.getText().toString();
                 task = new Task(selecteduser.getUserId(),start,end,name,dec);
-//                DataServices.sendTask(task.getTask(),requestQueue,AddNewTaskActivity.this);
-                resetActivity();
+                //DataServices.sendTask(task.getTask(),requestQueue,AddNewTaskActivity.this);
+                User.sendNewTask(AddNewTaskActivity.this,task.getTask(),requestQueue,sendTaskHandler->{
+
+                    resetActivity();
+                    return true;
+                });
 
             }
         });
@@ -94,13 +98,12 @@ public class AddNewTaskActivity extends AppCompatActivity  {
         departmantsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                   //int departmentNumber= Store.departments.get(i).getId(); //getting department number from MYDEPARTMENTS as integer
-                   //int departmentNumber = Store.departments.get(i).getId(); //getting department number from MYDEPARTMENTS as integer
-                    Log.i("ADD NEW TASK", String.valueOf(i));
-                    if(Store.departments.get(i).getUsers() != null){
 
-                        setUsersByDepartmentSelected(Store.departments.get(i)); //sending this integer to method
-                    }
+                    arrayAdapterWorkers.clear();
+                    //Toast.makeText(getApplicationContext(), Store.GLOBAL_DEPARTMANTS.get(departmentsItemsList.get(i).getName()), Toast.LENGTH_LONG).show();
+                    //Store.GLOBAL_DEPARTMANTS.get(departmentsItemsList.get(i).getName())-->get ID DEPARTMENT
+                    setUsersByDepartmentSelected(Store.getDepartmentById(Store.GLOBAL_DEPARTMANTS.get(departmentsItemsList.get(i).getName())));
+                  //workersSpinner.setAdapter(arrayAdapterWorkers);
                 }
 
             @Override
@@ -111,8 +114,9 @@ public class AddNewTaskActivity extends AppCompatActivity  {
         workersSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-              selecteduser= currentUsers.get(i); //selected user
-                Toast.makeText(getApplicationContext(),String.valueOf(selecteduser.getUserId()),Toast.LENGTH_LONG).show();
+                selecteduser = currentUsers.get(i);
+                Toast.makeText(getApplicationContext(),String.valueOf(currentUsers.get(i).getUserId()), Toast.LENGTH_LONG).show();
+
             }
 
             @Override
@@ -120,15 +124,6 @@ public class AddNewTaskActivity extends AppCompatActivity  {
 
             }
         });
-
-
-//        departmantsSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-//        });
-
-
 
     }
 //
@@ -148,34 +143,40 @@ public class AddNewTaskActivity extends AppCompatActivity  {
     }
 
 
-    private void getDepartmants(int myDepartment) {
 
-        arrayAdapterDepartments.add(Store.departments.get(myDepartment).getName());
-//        if(myRole < 6 ){
-//            myRole = myRole -1;
-//            arrayAdapterDepartments.add(Store.departments.get(myRole).getName());
-//        }else if (myRole == 6){
-//            myRole = myRole -1;
-//            for (int i = 0 ; i <Store.departments.size() ; i++){
-//
-//                arrayAdapterDepartments.add(Store.departments.get(i).getName());
-//
-//            }
-//        }
-         if(myDepartment != 7){
-            myDepartment = myDepartment -1;
-            for(int i =0 ; i < myDepartment - 1;  i++){
-                arrayAdapterDepartments.add(Store.departments.get(i).getName());
-            }
-         }
-// else if (myDepartment == 8){
-//            myDepartment = myDepartment -1;
-//
-//        }
-//        array= Store.departments.toArray();
-//        for (int i=0;i<User.getMyRole();i++){
-//           arrayAdapterDepartments.add(Store.departments.get(i).getName());
-//        }
+    private void getDepartmants() {
+
+
+        String department = Store.rollesDate.get(User.getMyRole());
+        switch (department){
+            case "department_manager":
+                departmentsItemsList.add(Store.departments.get(User.getDepartmentId()));
+                arrayAdapterDepartments.add(Store.departments.get(User.getDepartmentId()).getName());
+                break;
+            case "shift_manager":
+
+                break;
+            case "main_manager":
+                for (int i = 0 ; i < Store.departments.size();i++)
+                {
+                    departmentsItemsList.add(Store.departments.get(i));
+                    //arrayAdapterDepartments.add(Store.departments.get(i).getName());
+                    arrayAdapterDepartments.add(Store.departments.get(i).getName());
+                }
+
+                break;
+            case "administrator":
+                for (int i = 0 ; i < Store.departments.size();i++)
+                {
+                    departmentsItemsList.add(Store.departments.get(i));
+                    //arrayAdapterDepartments.add(Store.departments.get(i).getName());
+                    arrayAdapterDepartments.add(Store.departments.get(i).getName());
+                }
+
+                break;
+        }
+
+
 
         departmantsSpinner.setAdapter(arrayAdapterDepartments);
     }
@@ -230,8 +231,8 @@ public class AddNewTaskActivity extends AppCompatActivity  {
         workersItemsList = new ArrayList<>();
         departmentsItemsList = new ArrayList<>();
 //        DataServices.sendData(AppConfig.GET_MY_USERS,null,requestQueue,AddNewTaskActivity.this,Constants.METHOD_GET,null);
-        arrayAdapterDepartments = new ArrayAdapter<Department>(AddNewTaskActivity.this,android.R.layout.simple_spinner_dropdown_item,departmentsItemsList);
-        arrayAdapterWorkers = new ArrayAdapter<String>(AddNewTaskActivity.this,android.R.layout.simple_spinner_dropdown_item,workersItemsList);
+        arrayAdapterDepartments = new ArrayAdapter<String>(AddNewTaskActivity.this,android.R.layout.simple_spinner_dropdown_item);
+        arrayAdapterWorkers = new ArrayAdapter<User>(AddNewTaskActivity.this,android.R.layout.simple_spinner_dropdown_item,workersItemsList);
 
     }
     private void resetActivity() {

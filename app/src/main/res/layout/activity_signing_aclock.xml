@@ -60,6 +60,15 @@
 
         />
 
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/hours_ListView"
+        android:layout_below="@+id/exitData_TextView"
+        android:layout_above="@+id/exit_Button"
+        android:paddingBottom="10dp"
+        android:paddingTop="20dp"
+        />
     <Button
         android:id="@+id/exit_Button"
         android:layout_width="match_parent"

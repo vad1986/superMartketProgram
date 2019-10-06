@@ -1,9 +1,12 @@
 package com.arkadiy.enter.smp3.dataObjects;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 
-class Alert {
+public class Alert {
     private int id;
     private String name;
     private String description;
@@ -11,6 +14,28 @@ class Alert {
     private int userFrom;
     private int userto;
     private List<Integer> toDepartments;
+    private JSONObject alert;
+
+    public Alert (JSONObject alert){
+
+        try {
+            this.id = alert.getInt("id");
+            this.name = alert.getString("name");
+            this.description = alert.getString("description");
+            this.userFrom = alert.getInt("user_id_from");
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public Alert(int id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
 
     public int getId() {
         return id;
