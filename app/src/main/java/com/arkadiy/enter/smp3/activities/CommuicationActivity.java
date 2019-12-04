@@ -14,7 +14,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.arkadiy.enter.smp3.R;
 import com.arkadiy.enter.smp3.dataObjects.Alert;
-import com.arkadiy.enter.smp3.dataObjects.CustomAdapterClass;
+import com.arkadiy.enter.smp3.dataObjects.CustomAdapterAlert;
 import com.arkadiy.enter.smp3.dataObjects.Store;
 import com.arkadiy.enter.smp3.dataObjects.User;
 
@@ -38,7 +38,7 @@ public class CommuicationActivity extends AppCompatActivity {
     private Alert alert;
     private static ArrayList<Alert> alerts;
     private int sendToId;
-    private static CustomAdapterClass customAdapterClass;
+    private static CustomAdapterAlert customAdapterAlert;
 
     private static ArrayAdapter onlineUsersAdapter;
     @Override
@@ -72,8 +72,8 @@ public class CommuicationActivity extends AppCompatActivity {
 
                 }
 
-                customAdapterClass = new CustomAdapterClass(this,alerts);
-                alertListView.setAdapter(customAdapterClass);
+                customAdapterAlert = new CustomAdapterAlert(this,alerts);
+                alertListView.setAdapter(customAdapterAlert);
                 onlineUserSpinner.setAdapter(onlineUsersAdapter);
                 return true;
             });
@@ -182,9 +182,9 @@ public class CommuicationActivity extends AppCompatActivity {
             @Override
             public void run() {
                 alerts.add(0,newAlert);
-                customAdapterClass.add(newAlert);
+                customAdapterAlert.add(newAlert);
 
-                //customAdapterClass.addNewAlertToList(newAlert);
+                //customAdapterAlert.addNewAlertToList(newAlert);
                 alertListView.deferNotifyDataSetChanged();
 
             }

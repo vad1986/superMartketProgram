@@ -7,10 +7,12 @@ import android.location.Criteria;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -24,7 +26,15 @@ import com.arkadiy.enter.smp3.dataObjects.User;
 import com.arkadiy.enter.smp3.services.GpsChecker;
 import com.arkadiy.enter.smp3.utils.Constants;
 import com.arkadiy.enter.smp3.utils.ConstantsJson;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,22 +43,23 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
 
-public class SigningAClockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
+public class SigningAClockActivity extends FragmentActivity implements ActivityCompat.OnRequestPermissionsResultCallback, OnMapReadyCallback {
     private TextView enterDataTextView;
     private TextView exitDataTextView;
     private TextView userName;
     private Button enterButton;
     private Button exitButton;
     private JSONObject jsonClock;
+    private JSONObject jsonRes;
     private RequestQueue requestQueue;
     private Criteria criteria;
     private LocationManager locationManager;
     private GpsChecker checker;
-    Handler handler;
     private int in_out;
     private IHandler iHandler;
     private String enterTime;
@@ -59,6 +70,7 @@ public class SigningAClockActivity extends AppCompatActivity implements Activity
     private ArrayList<DayWork> listWork;
     private ListView weekWork;
     private CustomAdapterHours customAdapterHours;
+    private GoogleMap mMap;
 
 
 
@@ -76,22 +88,43 @@ public class SigningAClockActivity extends AppCompatActivity implements Activity
         exitDataTextView = (TextView) findViewById(R.id.exitData_TextView);
         enterButton = (Button) findViewById(R.id.enter_button);
         exitButton = (Button) findViewById(R.id.exit_Button);
-        userName = (TextView) findViewById(R.id.UserName_TextView);
+
 //        userName.setText("Hello "+User.getUserName()); //TODO: FIX THIS
         requestQueue = Volley.newRequestQueue(this);
         weekWork = (ListView)findViewById(R.id.hours_ListView);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+
+        User.getShiftsFromServer(iHandlerShifts->{
+            Message msg = new Message();
+            Bundle bundle = iHandlerShifts.getData();
+            try {
+                jsonRes = new JSONObject(bundle.getString("json"));
+                setDayWork(jsonRes);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return true;
+        });
+
+
+
+
+
         enterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 in_out = Constants.SET_IN_OCLOCK;
 
-                //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 0.0f, this);
                 checkLocation();
                 enterTime = getTime();
-                day = getDay();
-                sendToServer(enterTime, in_out);
-
-                //sendToServer(getTime(), in_out);
+                //day = getDay();
+                sendToServer(enterTime, in_out,enterDataTextView);
+                setLocationOnMap();
 
 
             }
@@ -102,11 +135,11 @@ public class SigningAClockActivity extends AppCompatActivity implements Activity
                 in_out = Constants.SET_OUT_OCLOCK;
                 checkLocation();
                 endTime = getTime();
-                sendToServer(endTime,in_out);
-//                exitDataTextView.setText("");
+                sendToServer(endTime,in_out,exitDataTextView);
 
-                exitDataTextView.setText(endTime);
-                setDayWork();
+
+
+                setLocationOnMap();
             }
         });
         App.setContext(this);
@@ -115,30 +148,74 @@ public class SigningAClockActivity extends AppCompatActivity implements Activity
         weekWork.setAdapter(customAdapterHours);
     }
 
-    private void setDayWork() {
-//        private DayWork dayWork;
-//        private ArrayList<DayWork> listWork;
-//        private ListView weekWork;
-//        private CustomAdapterHours customAdapterHours;
-        java.text.DateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        java.util.Date date1 = null;
-        java.util.Date date2 = null;
-        try {
-            date1 = df.parse(enterTime);
-            date2 = df.parse(endTime);
-        long diff = date2.getTime() - date1.getTime();;
 
-        sumTime = String.valueOf(diff);
-        dayWork = new DayWork(day,enterTime,endTime,sumTime);
-        listWork.add(dayWork);
-        customAdapterHours.notifyDataSetChanged();
+    private void setDayWork(JSONObject jsonResponse) {
+
+
+        java.text.DateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        java.text.DateFormat dfForDay = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date dateDay = null;
+        String date1 = null;
+        String date2 = null;
+        long startId = -100;// if null = -100
+        long endId = -100;// if null = -100
+        boolean dateNull =false;
+        try {
+            for (int i = 0;i < jsonResponse.getJSONArray("data").length();i++){
+
+                if (!jsonResponse.getJSONArray("data").getJSONObject(i).has("start")){
+                    date1 = "--";
+                    dateDay = null;
+                }else {
+
+                    date1 =  jsonResponse.getJSONArray("data").getJSONObject(i).getString("start");
+                    startId = jsonResponse.getJSONArray("data").getJSONObject(i).getLong("start_id");
+                    dateDay = dfForDay.parse(jsonResponse.getJSONArray("data").getJSONObject(i).getString("start"));
+
+                }
+                if (!jsonResponse.getJSONArray("data").getJSONObject(i).has("finish")){
+                    date2 = "--";
+
+                }else {
+                    date2 = jsonResponse.getJSONArray("data").getJSONObject(i).getString("finish");
+                    endId = jsonResponse.getJSONArray("data").getJSONObject(i).getLong("start_id");
+
+                }
+
+//            date1 = df.parse(enterTime);
+//            date2 = df.parse(endTime);
+                if ( jsonResponse.getJSONArray("data").getJSONObject(i).has("hours")){
+
+                    //long diff = date2.getTime() - date1.getTime();
+                    sumTime =  jsonResponse.getJSONArray("data").getJSONObject(i).getString("hours");
+
+                }
+                else {
+                    sumTime ="--";
+                    if (dateDay == null){
+                        dateDay = dfForDay.parse(jsonResponse.getJSONArray("data").getJSONObject(i).getString("finish"));
+                    }
+                }
+
+
+
+                // sumTime =  jsonResponse.getJSONArray("data").getJSONObject(i).getString("hours");
+//        sumTime = String.valueOf(diff);
+                dayWork = new DayWork(getDay(dateDay),date1,date2,sumTime,startId,endId);
+                listWork.add(dayWork);
+                customAdapterHours.notifyDataSetChanged();
+                dateDay =  null;
+
+            }
         } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
 
-    public void sendToServer(String time, int in_out) {
+    public void sendToServer(String time, int in_out,TextView textView) {
 
 
         try {
@@ -147,12 +224,31 @@ public class SigningAClockActivity extends AppCompatActivity implements Activity
             jsonClock.put("Longtitude", Double.parseDouble(checker.getLongtitude()));
             jsonClock.put("in_out", in_out); // in_out String
             jsonClock.put("date_time", String.valueOf(time)); // time String
+            jsonClock.put("gps",User.getGPSAnuble());
             User.punchClock(SigningAClockActivity.this, jsonClock, AppConfig.PUNCH_CLOCK, requestQueue, iHandler -> {
-                if (iHandler.getData().getInt(ConstantsJson.RESPONSE_CODE) == ResponseCode.NOT_IN_RANGE) {
+                try {
 
-                } else if (iHandler.getData().getInt(ConstantsJson.RESPONSE_CODE) == ResponseCode.PUNCH_CLOCK) {
-                    chengVisibility(time);
+                    JSONObject json;
+                    Bundle bundle = iHandler.getData();
+
+                        json =new JSONObject(bundle.getString("json"));
+
+
+
+                     if (iHandler.getData().getInt(ConstantsJson.RESPONSE_CODE) == ResponseCode.NOT_IN_RANGE) {
+
+                      } else if (iHandler.getData().getInt(ConstantsJson.RESPONSE_CODE) == ResponseCode.PUNCH_CLOCK) {
+                         Toast.makeText(App.getContext(),"Clock stamping was successful ",Toast.LENGTH_LONG).show();
+                           textView.setText(time);
+
+                            //chengVisibility(time);
+                      }else {
+                         Toast.makeText(App.getContext(),json.getString("message"),Toast.LENGTH_LONG).show();
+                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+
                 return true;
             });
 
@@ -168,9 +264,10 @@ public class SigningAClockActivity extends AppCompatActivity implements Activity
         String StringDate = df.format(Calendar.getInstance().getTime());
         return StringDate;
     }
-    public int getDay(){
+    public int getDay(Date day){
         Calendar c = Calendar.getInstance();
-        c.setTime(Calendar.getInstance().getTime());
+        c.setTime(day);
+        //c.setTime(Calendar.getInstance().getTime());
         int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
         return dayOfWeek;
     }
@@ -222,12 +319,9 @@ public class SigningAClockActivity extends AppCompatActivity implements Activity
         criteria.setSpeedRequired(false);
         criteria.setCostAllowed(true);
         criteria.setBearingRequired(false);
-
         criteria.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
         criteria.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
-
         locationManager.requestLocationUpdates(1000,1,criteria,checker,null);
-
 //        locationManager.removeUpdates(checker);
 //        locationManager=null;
 
@@ -253,28 +347,20 @@ public class SigningAClockActivity extends AppCompatActivity implements Activity
 
     }
 
-    public void chengVisibility (String date){
 
-        if (enterButton.getVisibility()== View.VISIBLE){
 
-            enterDataTextView.setText("");
-            exitDataTextView.setText("");
-            enterDataTextView.setText(date);
-            enterButton.setVisibility(View.GONE);
-            exitButton.setVisibility(View.VISIBLE);
-            String txt = enterDataTextView.getText().toString();
-//            ReadWriteFile.writeInToFile(FileConfig.SING_IN_A_CLOCK,txt,
-//                    SigningAClockActivity.this);
 
-        }else if(exitButton.getVisibility() == View.VISIBLE){
-
-            exitDataTextView.setText("");
-            exitDataTextView.setText(date);
-            enterButton.setVisibility(View.VISIBLE);
-            exitButton.setVisibility(View.GONE);
-        }
-
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
     }
-
-
+    private void setLocationOnMap(){
+        // Add a marker in Sydney, Australia, and move the camera.
+        LatLng location = new LatLng(Double.parseDouble(checker.getLatitude()),Double.parseDouble(checker.getLongtitude()));
+        float zoomLevel = 15.0f;
+        mMap.addMarker(new MarkerOptions().position(location).title("Your Location"));
+        // mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney,zoomeLevel));
+        CameraUpdate myLocation = CameraUpdateFactory.newLatLngZoom(location,zoomLevel);
+        mMap.animateCamera(myLocation);
+    }
 }

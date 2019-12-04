@@ -13,7 +13,7 @@ public class AdminActivity extends AppCompatActivity {
 
     private Button addNewUser_Btn;
     private Button editUser_Btn;
-    private Button editDepartment_Btn;
+   // private Button editDepartment_Btn;
     private Button createDepartment_Btn;
     private Button createAlert_Btn;
     private Button editAlert_Btn;
@@ -25,7 +25,7 @@ public class AdminActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin);
         addNewUser_Btn = (Button)findViewById(R.id.addNewUser_Btn);
         editUser_Btn = (Button)findViewById(R.id.editUser_Btn);
-        editDepartment_Btn = (Button)findViewById(R.id.editDepartment_Btn);
+
         createDepartment_Btn = (Button)findViewById(R.id.createDepartments_Btn);
         createAlert_Btn = (Button)findViewById(R.id.createAlert_Btn);
         editAlert_Btn = (Button)findViewById(R.id.editAlert_Btn);
@@ -43,21 +43,18 @@ public class AdminActivity extends AppCompatActivity {
         editUser_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(AdminActivity.this,EditUsersActivity.class);
+                startActivity(intent);
             }
         });
 
-        editDepartment_Btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
 
         createDepartment_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(AdminActivity.this, BuildDepartmentActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -65,6 +62,14 @@ public class AdminActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AdminActivity.this, CreateAlertActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        editAlert_Btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AdminActivity.this, EditAlertActivity.class);
                 startActivity(intent);
             }
         });

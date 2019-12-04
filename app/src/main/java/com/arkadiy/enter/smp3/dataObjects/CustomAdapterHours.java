@@ -39,7 +39,7 @@ public class CustomAdapterHours extends ArrayAdapter<DayWork> {
             viewHolder = (ViewHolder)r.getTag();
         }
 
-        viewHolder.dayDateTextView.setText(dayWorks.get(position).getDay());
+        viewHolder.dayDateTextView.setText(dayWorks.get(position).getDayWorkInWeek());
         viewHolder.startTimeTextView.setText(dayWorks.get(position).getStart());
         viewHolder.endTimeTextView.setText(dayWorks.get(position).getEnd());
         viewHolder.sumTimeTextView.setText(dayWorks.get(position).getSum());

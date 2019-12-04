@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -20,6 +21,7 @@ import com.arkadiy.enter.smp3.services.DataServices;
 import com.arkadiy.enter.smp3.services.SocketServices;
 import com.arkadiy.enter.smp3.utils.Constants;
 import com.arkadiy.enter.smp3.utils.ConstantsJson;
+import com.arkadiy.enter.smp3.utils.FileService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,11 +41,18 @@ public class User {
 
     private static IHandler taskActivityHandler;
     private static NotificationManagerCompat notificationManager;
-    private int userId;
+    private long userId;
     private String userName;
     private String userFirstName;
+    private String password;
     private int role;
     private String userLastName;
+    private String street;
+    private int houseNumber;
+    private int doorNumber;
+    private int telephone;
+
+    private int sex;
     private String privateKey;
     private String phone;
     private String city;
@@ -57,46 +66,69 @@ public class User {
     private List<Shift>lastShifts;
     private static RequestQueue requestQueue;
     private static Handler handler;
-    private static int myUserId;
+    private static long myUserId;
     private static String myPrivateKey;
     private static String myUserName;
-    private static String myImail;
+    private static String myEmail;
     private static int myRole;
-    private static int departmentId;
+    private static int myDepartmentId;
+    private  int departmentId;
+    private static int GPSAnuble;
     private static int numberNewTack; //TODO sum new task in this var
+    private static Department myDepartment;
 
     private static Map<Integer,String>userOnline;
+
+
+    public User() {
+    }
+
     public User(JSONObject jsonObject) {
 
         try {
 
+//                    "gps" : 1,
+//                    "sex" : 1,
 //                    "city" : "yehud",
 //                    "email" : "ahshjbsh@mail.com",
 //                    "status" : 2,
-//                    "userID" : 136,
+//                    "street" : "histadrut",
+//                    "userID" : 137,
 //                    "password" : "araara123",
-//                    "userName" : "Yonatan",
+//                    "userName" : "Oleg",
 //                    "userRole" : 2,
 //                    "managerId" : 12,
 //                    "telephone" : "0546567712",
-//                    "userLastName" : "Shvarmin",
-//                    "userFirstName" : "Yonatan"
+//                    "doorNumber" : 1,
+//                    "houseNumber" : 2,
+//                    "userLastName" : "Piskub",
+//                    "userFirstName" : "Oleg"
+
 
             this.city = jsonObject.getString("city");
             this.email = jsonObject.getString("email");
             this.status = jsonObject.getInt("status");
-            this.userId = jsonObject.getInt("userID");
+            this.userId = jsonObject.getLong("userID");
+            //TODO i need get this parameters from server
+            this.street = jsonObject.getString("street");
+
+            this.houseNumber = jsonObject.optInt("houseNumber");
+            this.sex = jsonObject.optInt("sex");
+            this.doorNumber = jsonObject.optInt("doorNumber");
+            this.telephone = jsonObject.optInt("telephone");
             this.userName = jsonObject.getString("userName");
+            this.password = jsonObject.getString("password");
             this.role = jsonObject.getInt("userRole");
-            this.managerId = jsonObject.getInt("managerId");
+
+            this.managerId = jsonObject.optInt("managerId");
             this.phone = jsonObject.getString("telephone");
             this.userFirstName = jsonObject.getString("userFirstName");
             this.userLastName = jsonObject.getString("userLastName");
-            this.myImail = jsonObject.getString("mail");
-            if(jsonObject.getInt(ConstantsJson.DEPARTMENT_ID) != -1){
-                //TODO: check if simple user get value -1 if yes delete operator if
+            this.myEmail = jsonObject.getString("email");
+            //TODO: create GPS parameters
+            //TODO: check if simple user get value -1 if yes delete operator if
                 this.departmentId = jsonObject.getInt(ConstantsJson.DEPARTMENT_ID);
-            }
+
 
 
         } catch (JSONException e) {
@@ -107,7 +139,44 @@ public class User {
     }
 
 
+    public static JSONObject parsFromObjToJSON(User user){
+        JSONObject JSuser = new JSONObject();
+        try {
 
+//        this.city = jsonObject.getString("city");
+//        this.email = jsonObject.getString("email");
+//        this.status = jsonObject.getInt("status");
+//        this.userId = jsonObject.getInt("userID");
+//        this.userName = jsonObject.getString("userName");
+//        this.role = jsonObject.getInt("userRole");
+//        this.managerId = jsonObject.getInt("managerId");
+//        this.phone = jsonObject.getString("telephone");
+//        this.userFirstName = jsonObject.getString("userFirstName");
+//        this.userLastName = jsonObject.getString("userLastName");
+//        this.myEmail = jsonObject.getString("mail");
+            JSuser.put("userID",user.getUserId());
+            JSuser.put("userName", user.getUserName());
+            JSuser.put("userFirstName", user.getUserFirstName());
+            JSuser.put("userLastName", user.getUserLastName());
+            JSuser.put("status",user.getStatus());
+            JSuser.put("password", user.getPassword());
+            JSuser.put("city", user.getCity());
+            JSuser.put("street", user.getStreet());
+            JSuser.put("houseNumber", user.getHouseNumber());
+            JSuser.put("doorNumber", user.getDoorNumber());
+            JSuser.put("managerId",user.getManagerId());
+            JSuser.put("telephone", user.getTelephone());
+            JSuser.put("email", user.getEmail());
+            JSuser.put("userRole", user.getRole());
+            JSuser.put("departmentId", user.getDepartmentId());
+            JSuser.put("sex", user.getSex());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return JSuser;
+
+    }
 
     public static void addNewTask(JSONObject taskJS){
         Task newTask = new Task(taskJS);
@@ -127,6 +196,13 @@ public class User {
         User.taskActivityHandler=handler;
     }
 
+    public static void setMyDepartment(Department myDepartment) {
+        User.myDepartment = myDepartment;
+    }
+
+    public static Department getMyDepartment() {
+        return myDepartment;
+    }
 
     public void closeTask(int taskPosition){
         if(myTasks!=null){
@@ -145,12 +221,11 @@ public class User {
     }
 
 
-    public static void logIn(JSONObject json){
+    public static void logIn(JSONObject json, TextView errorResponseView){
         requestQueue= Volley.newRequestQueue(App.getContext());
         DataServices.sendData(AppConfig.LOGIN,json,requestQueue,
                 getContext(),Constants.METHOD_POST,handLogIn->{
             try {
-
                     Bundle bundle = handLogIn.getData();
                     JSONObject jsonRespons;
                     if(bundle.getString("json")!=null) {
@@ -158,18 +233,12 @@ public class User {
                         jsonRespons =new JSONObject(bundle.getString("json"));
                         if (jsonRespons.getInt(ConstantsJson.RESPONSE_CODE) < ResponseCode.ERROR)
                         {
-                            Intent intent = new Intent(App.getContext(), MainActivity.class);
-                            App.getContext().startActivity(intent);
-
+                            successfulLoginAndFillData(jsonRespons);
 
                         }else {
-                            //TODO show message to user
+                            errorResponseView.setText("Incorrect Username or Password");
                             return false;
                         }
-                        SocketServices messageSender=new SocketServices();
-                        messageSender.execute();
-                        Store.fillStoreData(jsonRespons);
-                        saveUser(jsonRespons);
 
 
 
@@ -183,20 +252,37 @@ public class User {
 
     }
 
+    public static void successfulLoginAndFillData(JSONObject jsonRespons){
+        SocketServices messageSender=new SocketServices();
+        messageSender.execute();
+        saveUser(jsonRespons);
+        Store.fillStoreData(jsonRespons);
+        Intent intent = new Intent(App.getContext(), MainActivity.class);
+        App.getContext().startActivity(intent);
+    }
+
 
     public static void sendAlert(Context context,JSONObject alert,RequestQueue requestQueue){
         // Sends  JSObject to data serveses and insert into sent alerts
+        //TODO: send please handler
         DataServices.sendData(AppConfig.SEND_ALERT,alert,requestQueue,context,Constants.METHOD_POST,null);
 
     }
 
+    //Save My Users params
     public static void saveUser (JSONObject json){
         try {
-
-           User.setMyUserId(json.getInt("user_id"));
-           User.setMyRole(json.getInt("role"));
+            requestQueue=Volley.newRequestQueue(App.getContext());
+            User.setMyUserId(json.getLong("user_id"));
+            User.setMyRole(json.getInt("role"));
             User.setMyPrivateKey(json.getString("private_key"));
             User.setMyUserName(json.getString("user_name"));
+            User.setGPSAnuble(json.getInt("gps"));
+            User.setMyDepartmentId(json.getInt("departmentId"));
+
+            String string=createStringForFile(User.getMyPrivateKey(),User.getMyUserId());
+            FileService.save(string);
+
 
             //            myAcount.put("user_id",json.getInt("user_id"));
             //            myAcount.put("role",json.getInt("role"));
@@ -208,7 +294,16 @@ public class User {
         //json.getString("user_id"),j.getString("user_name")," ",j.getString("private_key"),j.getString("role")
 
     }
-    public static void sendNewTask (Context context, JSONObject jsonTask,RequestQueue requestQueue,IHandler sendTaskHandler){
+
+
+    private static String createStringForFile(String privateKey,long userId){
+        StringBuilder stringBuilder=new StringBuilder();
+
+        String string=stringBuilder.append(privateKey).append("\n").append(userId).toString();
+
+        return string;
+    }
+    public static void sendNewTask (boolean personal,Context context, JSONObject jsonTask,RequestQueue requestQueue,IHandler sendTaskHandler){
 
         DataServices.sendData(AppConfig.ADD_NEW_TASK,jsonTask,requestQueue,context,Constants.METHOD_POST,sendTask->{
             JSONObject object;
@@ -237,16 +332,24 @@ public class User {
             try {
 
                 JSONObject json;
+                Message msg = new Message();
                 Bundle bundle = handTask.getData();
             if(bundle.getString("json")!=null) {
                 json =new JSONObject(bundle.getString("json"));
-                if(json.getJSONArray("data")!=null){
+                if(!json.isNull("data")){
                     JSONArray jsonArray = json.getJSONArray("data");
                     setTasks(jsonArray);
+                    msg.setData(bundle);
+                    i_handler.sendMessage(msg);
+                }else {
+                    json.put("response_code",ResponseCode.ERROR);
+                    Bundle bundle2 = new Bundle();
+                    bundle2.putString("json",json.toString());
+                    msg.setData(bundle2);
+                    i_handler.sendMessage(msg);
                 }
 
 
-                i_handler.sendMessage(new Message());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -271,6 +374,7 @@ public class User {
                         bundle.putInt(ConstantsJson.RESPONSE_CODE,json.getInt(Constants.RESPONSE_CODE));
                         msg.setData(bundle);
                         i_handler.sendMessage(msg);
+
                         return true;
                     }else if(json.getInt(Constants.RESPONSE_CODE) == ResponseCode.NOT_IN_RANGE){
                         Toast.makeText(contextClock,json.getString(ConstantsJson.MESSAGE),Toast.LENGTH_LONG).show();
@@ -286,7 +390,28 @@ public class User {
 
 
     }
+    public static void getShiftsFromServer(IHandler i_handler){
+        DataServices.sendData(AppConfig.GET_SHIFTS+"2",null,requestQueue,getContext(),Constants.METHOD_GET,getShiftsHand->{
 
+            JSONObject jsonRespons;
+            Message msg = new Message();
+            Bundle bundle = getShiftsHand.getData();
+            try {
+
+                if(bundle.getInt(Constants.RESPONSE_CODE) < ResponseCode.ERROR){
+                    jsonRespons = new JSONObject(bundle.get("json").toString());
+                    Toast.makeText(getContext(),String.valueOf(jsonRespons.getInt("response_code")),Toast.LENGTH_LONG).show();
+                    msg.setData(bundle);
+                    i_handler .sendMessage(msg);
+                }
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            return true;
+        });
+    }
 
     public static void setTasks(JSONArray tasksArray){
         myTasks = new ArrayList<Task>();
@@ -337,19 +462,19 @@ public class User {
         notificationManager.notify(1,notification);
 
     }
-    public static int getDepartmentId() {
+    public int getDepartmentId() {
         return departmentId;
     }
 
-    public static void setDepartmentId(int departmentId) {
-        User.departmentId = departmentId;
+    public static void setMyDepartmentId(int departmentId) {
+        User.myDepartmentId = departmentId;
     }
 
-    public static int getMyUserId() {
+    public static long getMyUserId() {
         return myUserId;
     }
 
-    public static void setMyUserId(int myUserId) {
+    public static void setMyUserId(long myUserId) {
         User.myUserId = myUserId;
     }
 
@@ -377,7 +502,7 @@ public class User {
         User.myRole = myRole;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
@@ -393,7 +518,7 @@ public class User {
         this.sentAlerts = sentAlerts;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
@@ -509,7 +634,7 @@ public class User {
 
     public static void logOut(){
 
-        DataServices.sendData(AppConfig.LOGOUT_SERVER,null,requestQueue, App.getContext(),Constants.METHOD_POST,handLogOut->{
+        DataServices.sendData(AppConfig.LOGOUT_SERVER,new JSONObject(),requestQueue, App.getContext(),Constants.METHOD_POST,handLogOut->{
 
             Intent intent = new Intent(App.getContext(), LogInActivity.class);
             App.getContext().startActivity(intent);
@@ -534,6 +659,74 @@ public class User {
         this.privateKey = privateKey;
     }
 
+    public static int getGPSAnuble() {
+        return GPSAnuble;
+    }
+
+    public static void setGPSAnuble(int GPSAnuble) {
+        User.GPSAnuble = GPSAnuble;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public int getHouseNumber() {
+        return houseNumber;
+    }
+
+    public void setHouseNumber(int houseNumber) {
+        this.houseNumber = houseNumber;
+    }
+
+    public int getDoorNumber() {
+        return doorNumber;
+    }
+
+    public void setDoorNumber(int doorNumber) {
+        this.doorNumber = doorNumber;
+    }
+
+    public int getTelephone() {
+        return telephone;
+    }
 
 
+    public void setTelephone(int telephone) {
+        this.telephone = telephone;
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
+    }
+
+
+    public static String getMyEmail() {
+        return myEmail;
+    }
+
+    public static void setMyEmail(String myEmail) {
+        User.myEmail = myEmail;
+    }
+
+    public static int getMyDepartmentId() {
+        return myDepartmentId;
+    }
 }
+

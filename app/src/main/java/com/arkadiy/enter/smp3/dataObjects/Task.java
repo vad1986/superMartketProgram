@@ -16,7 +16,7 @@ public class Task implements Parcelable {
     }
 
 
-    public Task(int userId, String start, String end, String name, String dec) {
+    public Task(float userId, String start, String end, String name, String dec) {
         this.task = new JSONObject();
         setUserId(userId);
         setTimeDateStart(start);
@@ -24,6 +24,16 @@ public class Task implements Parcelable {
         setNameTask(name);
         setDescription(dec);
 
+
+    }
+
+    public Task(String start, String end, String name, String dec,long groupId) {
+        this.task = new JSONObject();
+        setTimeDateStart(start);
+        setTimeDateEnd(end);
+        setNameTask(name);
+        setDescription(dec);
+        setGroupId(groupId);
 
     }
     public JSONObject getTask() {
@@ -164,7 +174,7 @@ public class Task implements Parcelable {
             e.printStackTrace();
         }
     }
-    public void setUserId(int userId){
+    public void setUserId(float userId){
         try {
 
 
@@ -175,7 +185,7 @@ public class Task implements Parcelable {
         }
     }
 
-    public void setGroupId(int groupId){
+    public void setGroupId(long groupId){
         try {
 
             this.task.put("group_id",groupId);

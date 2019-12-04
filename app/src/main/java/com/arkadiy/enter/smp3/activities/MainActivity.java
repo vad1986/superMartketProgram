@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
     //private Button addNewUserButton;
     private Button signingAClockButton;
     private Button tasksButton;
-    private Button addNewTaskButton;
+    //private Button addNewTaskButton;
     private Button adminOptionsButton;
     private Button managerOptionsButton;
     private Button alertButton;
@@ -61,9 +61,6 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
         super.onCreate(savedInstanceState);
         USERS =  new HashMap<>();
         setContentView(R.layout.activity_main);
-
-
-
 
         context = MainActivity.this;
 
@@ -97,17 +94,23 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
     private void checkRoll(){
         int role = User.getMyRole();
         switch (role){
-            case 1: createUserUI();
-            break;
-            case 2:
+            case 0: // user
+                createUserUI();
+                break;
+            case 1://Department manager
                 createUserUI();
                 createManagerUI();
             break;
-            case 3:
+            case 2://shift Manager
                 createUserUI();
-                createMainManagerUI();
+                createManagerUI();
             break;
-            case 4:
+            case 3://Main Manager
+                createUserUI();
+                createManagerUI();
+
+            break;
+            case 4://Administrator
                 createUserUI();
                 createManagerUI();
                 createAdminUI();
@@ -119,7 +122,10 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
         exitButton = (Button)findViewById(R.id.exit_Button);
         signingAClockButton = (Button)findViewById(R.id.signingAClock_Button);
         tasksButton = (Button)findViewById(R.id.tasks_Button);
-        addNewTaskButton = (Button)findViewById(R.id.addNewTask_Button);
+
+        //Deleted this button and move to the task Activity
+        //addNewTaskButton = (Button)findViewById(R.id.addNewTask_Button);
+
         alertButton = (Button)findViewById(R.id.communication_Button);
         managerOptionsButton =(Button)findViewById(R.id.manager_options);
         adminOptionsButton = (Button)findViewById(R.id.admin_options);
@@ -140,13 +146,13 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
             }
         });
 
-        addNewTaskButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,AddNewTaskActivity.class);
-                startActivity(intent);
-            }
-        });
+//        addNewTaskButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(MainActivity.this,AddNewTaskActivity.class);
+//                startActivity(intent);
+//            }
+//        });
         alertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,16 +169,21 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
             }
         });
     }
-    private void createMainManagerUI(){
-
-    }
+//    private void createMainManagerUI(){
+//
+//        Intent intent = new Intent(MainActivity.this,ManagerActivity.class);
+//        startActivity(intent);
+//
+//
+//    }
 
     private void createManagerUI(){
         managerOptionsButton.setVisibility(View.VISIBLE);
         managerOptionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(MainActivity.this,ManagerActivity.class);
+                startActivity(intent);
             }
         });
 

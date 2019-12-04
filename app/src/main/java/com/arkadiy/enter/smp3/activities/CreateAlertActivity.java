@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -39,6 +40,7 @@ public class CreateAlertActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (nameForNewAlert_textView.getText() !="" && descriptionForNewAlert_textView.getText()!=""){
                     createAlert();
+
                 }
             }
         });
@@ -50,10 +52,21 @@ public class CreateAlertActivity extends AppCompatActivity {
 
         try {
             JSONObject newAlert = new JSONObject().put("name",nameForNewAlert_textView.getText().toString()
-            ).put("description",descriptionForNewAlert_textView.getText().toString()).put("id",CREATE_NEW_ALERT_ID);
-            Admin.createNewAlert(CreateAlertActivity.this,newAlert,requestQueue,i_handler->{
-                if (i_handler.getData().getInt(Constants.RESPONSE_CODE) < ResponseCode.ERROR){
+            ).put("description",descriptionForNewAlert_textView.getText().toString()).put("id",CREATE_NEW_ALERT_ID).put("remove",CREATE_NEW_ALERT_ID);
+            Admin.createOrEditAlert(CreateAlertActivity.this,newAlert,requestQueue, i_handler->{
+                JSONObject json = new JSONObject();
+                Bundle  bundle = i_handler.getData();
+                try {
+                    json = new JSONObject(bundle.getString("json"));
 
+                Toast.makeText(App.getContext(),json.getString("message"),Toast.LENGTH_LONG).show();
+                if (i_handler.getData().getInt(Constants.RESPONSE_CODE) < ResponseCode.ERROR){
+                    nameForNewAlert_textView.setText("");
+                    descriptionForNewAlert_textView.setText("");
+                    //Toast.makeText(App.getContext(),i_handler.getData().getString("message"),Toast.LENGTH_LONG).show();
+                }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
 
                 return true;

@@ -10,17 +10,30 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".activities.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:name=".activities.App"
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning"
-        android:networkSecurityConfig="@xml/network_security_config"
-        android:usesCleartextTraffic="true">
-        <activity android:name=".activities.CommuicationActivity"/>
+        android:usesCleartextTraffic="true"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".activities.EditAlertActivity" />
+        <activity android:name=".activities.EditUserAttendancy" />
+        <activity android:name=".activities.EditClockActivity" />
+        <activity android:name=".activities.TasksReportActivity" />
+        <activity android:name=".activities.ManagerActivity" />
+        <activity android:name=".activities.BuildDepartmentActivity" />
+        <activity android:name=".activities.SelecedEditUserActivity" />
+        <activity android:name=".activities.EditUsersActivity" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/map_key" />
+
+        <activity android:name=".activities.CommuicationActivity" />
         <activity android:name=".activities.CreateAlertActivity" />
         <activity android:name=".activities.GPSActivity" />
         <activity android:name=".activities.AdminActivity" />
@@ -36,6 +49,10 @@
         <activity android:name=".activities.SigningAClockActivity" />
         <activity android:name=".activities.TasksActivity" />
         <activity android:name=".activities.AddNewTaskActivity" />
+        <activity
+            android:name=".WelcomePage"
+            android:label="@string/title_activity_welcome_page"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,27 +23,47 @@ import java.util.Map;
 public class Store {
 
     public static  List<Department> departments;
-    public static  Map<Integer,String> rollesDate;
+    public static  List<User> allUsers;
+    public static  HashMap<Integer,String> rollesDate;
     private static List<Alert>alerts;
-
+    public static List<Manager>managers;
     public static  Map<String,Integer> GLOBAL_DEPARTMANTS;
     private static Map<Integer,Report>reports;
     private static JSONArray usersOnline;
+    public static List<Rolle> rolles;
+    private static Rolle rolle;
 
 
     public static void fillStoreData(JSONObject dataFromServer) {
         try {
             departments = new ArrayList<Department>();
+            managers = new ArrayList<>();
+
             AppConfig.SOCKET_SERVER_URL ="ws://"+ dataFromServer.getString("socket");
             setRollDate(dataFromServer.getJSONArray("roles_data"));
             setGlobalDepartmants(dataFromServer.getJSONArray("departments_data"));
             fillDepartments(dataFromServer.getJSONArray("departments"));
 
             fillAlertList(dataFromServer.getJSONArray("sentences"));
+            getManagers();
+
         //{ "identifier" : 1, "description" : "cashier" }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    private static void getManagers(){
+        for (Department d:departments){
+            if (d.getManager()!=null){
+
+                managers.add(d.getManager());
+            }
+        }
+    }
+    public static List <Manager>  getManagerList(){
+
+        return managers;
+
     }
 
     public static void setGlobalDepartmants(JSONArray globalDepartments){
@@ -60,10 +81,13 @@ public class Store {
     public static void setRollDate(JSONArray rollDate){
 
         rollesDate = new HashMap<Integer,String>();
+        rolles  =  new ArrayList();
         for (int i=0;i<rollDate.length();i++){
 
             try {
-                rollesDate.put(rollDate.getJSONObject(i).getInt("identifier"),rollDate.getJSONObject(i).getString("description"));
+                rolle = new Rolle(rollDate.getJSONObject(i).getInt("identifier"),rollDate.getJSONObject(i).getString("description"));
+                rollesDate.put(rollDate.getJSONObject(i).getInt("identifier"),rollDate.getJSONObject(i).getString("description")); // TODO need cheng rollesData to rolles
+                rolles.add(rolle);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -122,12 +146,22 @@ public class Store {
 
 
     private static void fillDepartments(JSONArray departmentsArray)throws Exception{
+
         for(int i = 0 ; i < departmentsArray.length(); i++){
 
             Department department=new Department((JSONObject) departmentsArray.get(i));
             //
             departments.add(department);
+            int x = 0 ;
+            if(department.getId()==User.getMyDepartmentId())
+            User.setMyDepartment(department);
+
+
+
         }
+
+
+
     }
     /*
 
@@ -156,6 +190,23 @@ public class Store {
         return departments.get(i);
     }
 
+//    public static void setAllUsers (List<Department> departments){
+//        allUsers = new ArrayList<User>();
+//        for (int i = 0 ; i < departments.size();i++){
+//            allUsers.addAll( departments.get(i).getUsers());
+//        }
+//
+//
+//    }
+
+    public static void setAllUsers(User user) {
+
+        if (allUsers == null){
+            allUsers = new ArrayList<User>();
+        }
+        allUsers.add(user);
+    }
+
     public static JSONArray getUsersOnline() {
         return usersOnline;
     }
@@ -179,6 +230,8 @@ public class Store {
         return alerts;
     }
 
+
+
     public void setAlerts(List<Alert> alerts) {
         this.alerts = alerts;
     }
@@ -199,9 +252,29 @@ public class Store {
 
     }
 
-    public static void doUnSubscribe(){
+    public static List<String>getAllUserName(){
 
+        List<String> userName = new ArrayList<>();
+        for (int i = 0 ; i < allUsers.size();i++){
+            userName.add( allUsers.get(i).getUserName());
+        }
+        return userName;
+    }
+    public static List<String>getAllDepartmentsName(){
+        List<String> departmenetName = new ArrayList<>();
 
+        for (int i = 0 ; i < getDepartments().size() ; i++){
+            departmenetName.add(getDepartments().get(i).getName());
+        }
+        return departmenetName;
+    }
+
+    public static List<User> getAllUsers() {
+        return allUsers;
+    }
+
+    public static void setAllUsers(List<User> allUsers) {
+        Store.allUsers = allUsers;
     }
 }
 

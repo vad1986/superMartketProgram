@@ -15,7 +15,8 @@ import com.arkadiy.enter.smp3.R;
 
 @SuppressLint("ValidFragment")
 public class DialogforgotPassword extends AppCompatDialogFragment  {
-    private EditText forgotPasswordTaskEditText;
+    private EditText forgotPasswordEmailEditText;
+    private EditText forgotPasswordUserNameEditText;
     private DialogforgotPassword.DialogforgotPasswordListener listener;
 
     @Override
@@ -24,7 +25,10 @@ public class DialogforgotPassword extends AppCompatDialogFragment  {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.layout_dialog_forgot_password,null);
-        builder.setView(view).setTitle("User Name "+getTag())
+        forgotPasswordEmailEditText = view.findViewById(R.id.forgotPasswordEmail_EditText);
+        forgotPasswordUserNameEditText = view.findViewById(R.id.forgotPasswordUserName_EditText);
+
+        builder.setView(view).setTitle("Please enter the following values")
                 .setNegativeButton("CENCEL", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -34,12 +38,17 @@ public class DialogforgotPassword extends AppCompatDialogFragment  {
                 .setPositiveButton("SEND", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String email = forgotPasswordTaskEditText.getText().toString();
-                        listener.applyText(email);
+                        String userName = forgotPasswordUserNameEditText.getText().toString();
+                        String email = forgotPasswordEmailEditText.getText().toString();
+                        listener.applyText(userName,email);
 
                     }
                 });
-        forgotPasswordTaskEditText = view.findViewById(R.id.forgotPasswordTask_EditText);
+
+        forgotPasswordEmailEditText = view.findViewById(R.id.forgotPasswordEmail_EditText);
+        forgotPasswordUserNameEditText = view.findViewById(R.id.forgotPasswordUserName_EditText);
+
+
 
         return builder.create();
 
@@ -57,7 +66,7 @@ public class DialogforgotPassword extends AppCompatDialogFragment  {
     }
 
     public interface DialogforgotPasswordListener{
-        void applyText(String email );
+        void applyText(String userName , String email );
     }
 
 }

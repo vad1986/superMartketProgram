@@ -63,16 +63,16 @@
                 android:inputType="textPersonName"
                 android:hint="Second Name" />
 
-            <EditText
-                android:id="@+id/addNewUserRole_EditText"
+            <Spinner
+                android:id="@+id/addNewUserRole_Spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:hint="Role" />
 
-            <EditText
-                android:id="@+id/addnewUserManager_EditText"
+            <Spinner
+                android:id="@+id/addNewUserManager_Spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"

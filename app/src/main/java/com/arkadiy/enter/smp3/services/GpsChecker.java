@@ -80,7 +80,7 @@ public class GpsChecker implements LocationListener, Runnable {
             String y="Longtitude is--> "+location.getLongitude();
 
 
-            Toast.makeText(this.context,"LATITUDE="+x+" LONGTITUDE="+y, Toast.LENGTH_LONG).show();
+            //Toast.makeText(this.context,"LATITUDE="+x+" LONGTITUDE="+y, Toast.LENGTH_LONG).show();
             //locationManager.removeUpdates(this);
 
 //            msg = new Message();

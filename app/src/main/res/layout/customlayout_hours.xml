@@ -6,10 +6,9 @@
 
     <TextView
         android:id="@+id/day_TextView"
-        android:layout_width="50dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:paddingStart="20dp"
+        android:layout_marginStart="2dp"
         android:text="day" />
 
     <TextView

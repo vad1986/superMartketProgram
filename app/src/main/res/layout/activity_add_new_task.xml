@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,20 +8,7 @@
     tools:context=".activities.AddNewTaskActivity">
 
 
-    <Spinner
-        android:id="@+id/departmants_Spinner"
-        android:layout_width="match_parent"
-        android:layout_height="38dp"
-        android:layout_below="@+id/editEnd_EditText"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="46dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginRight="0dp"
 
-
-        >
-    </Spinner>
 
     <EditText
         android:id="@+id/editStartDate_EditText"
@@ -33,7 +21,6 @@
         android:focusableInTouchMode="false"
         android:gravity="center_horizontal"
         android:inputType="date"
-        android:layout_alignParentRight="true"
         />
 
 
@@ -42,13 +29,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="End Date DD-MM-YYYY"
-        android:layout_alignParentRight="true"
         android:clickable="false"
+        android:gravity="center_horizontal"
         android:cursorVisible="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:gravity="center_horizontal"
-        android:layout_below="@+id/editStartDate_EditText"
         android:inputType="date"
         />
 
@@ -57,31 +42,50 @@
         android:id="@+id/nameTask_EditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editEnd_EditText"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
         android:defaultFocusHighlightEnabled="true"
-        android:gravity="center_horizontal"
         android:hint="Name Task"
+        android:gravity="center_horizontal"
+
+
         android:inputType="text" />
 
     <Spinner
-        android:id="@+id/workers_Spinner"
+        android:id="@+id/departmants_Spinner"
         android:layout_width="match_parent"
         android:layout_height="38dp"
-        android:layout_below="@+id/editEnd_EditText"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="92dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginRight="0dp"></Spinner>
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        ></Spinner>
+
+
+
+    <Switch
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/switchUsers"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/map"
+        android:checked="true"
+        android:text="Personal"
+        android:textOff="OFF"
+        android:textOn="ON"
+        android:textSize="20dp" />
+
+
+    <Spinner
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:id="@+id/workers_Spinner"
+        android:layout_width="match_parent"
+        android:layout_height="38dp">
+
+    </Spinner>
+
     <EditText
         android:id="@+id/taskDecription_EditText"
         android:layout_width="match_parent"
         android:layout_height="163dp"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="225dp"
         android:ems="10"
         android:inputType="textMultiLine"
         android:gravity="top"
@@ -91,12 +95,18 @@
 
     <Button
         android:id="@+id/creatNewTask_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="0dp"
-        android:text="Creat new task" />
+        android:layout_width="300dp"
+        android:layout_marginTop="140sp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/buttonshape"
+        android:shadowColor="#A8A8A8"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"
+        android:text="SUBMIT"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
 
-
-</RelativeLayout>
+        />
+</LinearLayout>

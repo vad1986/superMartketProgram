@@ -95,6 +95,7 @@ public class DataServices {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                System.out.println("error");
 
             }
         }) {
@@ -233,16 +234,16 @@ public class DataServices {
         for (int i = 0 ; i < userParameters.length;i++){
             switch (i){
                 case 1: // set user_id
-                   // user.setUserId(Integer.parseInt(userParameters[i]));
+                    user.setUserId(Integer.parseInt(userParameters[i]));
                     break;
                 case 2:  // set user_name
-               //     user.setUserName(userParameters[i]);
+                    user.setUserName(userParameters[i]);
                     break;
                 case 4: // set private_key
-                 //   user.setPrivateKey(userParameters[i]);
+                    user.setPrivateKey(userParameters[i]);
                     break;
                 case 5: // set_role
-                  //  user.setRole(Integer.parseInt(userParameters[i]));
+                    user.setRole(Integer.parseInt(userParameters[i]));
                     break;
             }
         }
