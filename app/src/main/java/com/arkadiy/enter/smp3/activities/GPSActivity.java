@@ -11,6 +11,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -171,6 +172,8 @@ public class GPSActivity extends FragmentActivity implements OnMapReadyCallback 
             }
         });
         getCurrentParams();
+
+
 
     }
 
@@ -381,5 +384,11 @@ public class GPSActivity extends FragmentActivity implements OnMapReadyCallback 
             zoomlevel = (int) (16 - Math.log(scale) / Math.log(2));
         }
         return zoomlevel;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
     }
 }

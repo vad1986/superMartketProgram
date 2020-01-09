@@ -5,9 +5,11 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +23,7 @@ import com.arkadiy.enter.smp3.dataObjects.User;
 import com.arkadiy.enter.smp3.dialogs.DialogCloseTask;
 import com.arkadiy.enter.smp3.dialogs.DialogDescriptionTask;
 import com.arkadiy.enter.smp3.services.DataServices;
+import com.arkadiy.enter.smp3.services.GlobalServices;
 import com.arkadiy.enter.smp3.utils.Constants;
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -34,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class TasksActivity extends AppCompatActivity implements DialogCloseTask.DialogCloseTaskListener {
 
@@ -43,7 +47,7 @@ public class TasksActivity extends AppCompatActivity implements DialogCloseTask.
     private static ArrayList<String> taskNames;
     private  static ArrayAdapter<Task> adapter;
     //private TextView amountOfTasksTextView;
-    private Button creatTask;
+    private ImageButton creatTask;
     private static final String TAG = "TasksActivity";
     private RequestQueue requestQueue;
     private static SwipeMenuCreator creator;
@@ -68,9 +72,8 @@ public class TasksActivity extends AppCompatActivity implements DialogCloseTask.
         App.setContext(this);
         taskNames=new ArrayList<>();
         requestQueue = Volley.newRequestQueue(this);
-        creatTask = (Button)findViewById(R.id.creatNewTaskActivity_button);
+        creatTask = (ImageButton)findViewById(R.id.addNewTaskButton);
         listViewTask = (SwipeMenuListView) findViewById(R.id.listViewTask);
-
         setUserHandler();
 
         //amountOfTasksTextView = (TextView)findViewById(R.id.amountOfTasks_TextView);
@@ -97,7 +100,9 @@ public class TasksActivity extends AppCompatActivity implements DialogCloseTask.
         });
 
 
-
+        Toolbar toolbar=(Toolbar)findViewById(R.id.toolbarMine);
+        setSupportActionBar(toolbar);
+        GlobalServices.addListener(toolbar,this);
     }
 
     private void setUserHandler() {
@@ -153,7 +158,7 @@ public class TasksActivity extends AppCompatActivity implements DialogCloseTask.
     private void afterGotTasks(){
 
         if(taskNames.size()!=0){
-            adapter = new ArrayAdapter(TasksActivity.this,android.R.layout.simple_list_item_1,taskNames);
+            adapter = new ArrayAdapter(TasksActivity.this,R.layout.list_font,R.id.blabla,taskNames);
             //adapter = new ArrayAdapter(TasksActivity.this,android.R.layout.simple_list_item_1);
             listViewTask.setAdapter(adapter);
             adapter.notifyDataSetChanged();
@@ -237,5 +242,9 @@ public class TasksActivity extends AppCompatActivity implements DialogCloseTask.
     }
 
 
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
+    }
 }

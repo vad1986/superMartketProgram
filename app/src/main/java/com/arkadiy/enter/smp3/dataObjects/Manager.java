@@ -59,7 +59,6 @@ public class Manager extends User {
 
                         if(bundle.getInt(Constants.RESPONSE_CODE) < ResponseCode.ERROR){
                             jsonRespons = new JSONObject(bundle.get("json").toString());
-                            Toast.makeText(getContext(),String.valueOf(jsonRespons.getInt("response_code")),Toast.LENGTH_LONG).show();
                             msg.setData(bundle);
                             houresHadler .sendMessage(msg);
                         }

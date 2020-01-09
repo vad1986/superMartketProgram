@@ -3,8 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:elevation="4dp"
-    android:background="@color/colorPrimaryDark">
+    android:id="@+id/toolbarMine"
+    android:background="@color/primery"
+    app:title="@string/toolbarTitle"
+    app:titleTextColor="@color/white"
+    android:clickable="true"
+
+    >
+
+
+
 
    <!-- <com.sevenhorse.View.CircularImageView
         android:id="@+id/profile"

@@ -7,7 +7,12 @@
     tools:context=".activities.SigningAClockActivity">
 
 
+        <include layout="@layout/toolbar"
+            />
+
+
     <fragment
+        android:layout_marginTop="20sp"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:id="@+id/map"

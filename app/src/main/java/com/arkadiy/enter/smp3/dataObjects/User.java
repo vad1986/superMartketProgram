@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +65,7 @@ public class User {
     private List<Alert>recivedAlerts;
     private List<Alert>sentAlerts;
     private List<Shift>lastShifts;
-    private static RequestQueue requestQueue;
+    public static RequestQueue requestQueue;
     private static Handler handler;
     private static long myUserId;
     private static String myPrivateKey;
@@ -635,7 +636,7 @@ public class User {
     public static void logOut(){
 
         DataServices.sendData(AppConfig.LOGOUT_SERVER,new JSONObject(),requestQueue, App.getContext(),Constants.METHOD_POST,handLogOut->{
-
+            FileService.removePrivateKey();
             Intent intent = new Intent(App.getContext(), LogInActivity.class);
             App.getContext().startActivity(intent);
                     return true;

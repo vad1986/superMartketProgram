@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.arkadiy.enter.smp3.R;
@@ -17,6 +18,8 @@ import com.arkadiy.enter.smp3.R;
 public class DialogforgotPassword extends AppCompatDialogFragment  {
     private EditText forgotPasswordEmailEditText;
     private EditText forgotPasswordUserNameEditText;
+    private Button cancelButton;
+    private Button enterButton;
     private DialogforgotPassword.DialogforgotPasswordListener listener;
 
     @Override
@@ -27,28 +30,46 @@ public class DialogforgotPassword extends AppCompatDialogFragment  {
         View view = inflater.inflate(R.layout.layout_dialog_forgot_password,null);
         forgotPasswordEmailEditText = view.findViewById(R.id.forgotPasswordEmail_EditText);
         forgotPasswordUserNameEditText = view.findViewById(R.id.forgotPasswordUserName_EditText);
+        enterButton = view.findViewById(R.id.enterRestore);
+        cancelButton = view.findViewById(R.id.cancelRestore);
 
-        builder.setView(view).setTitle("Please enter the following values")
-                .setNegativeButton("CENCEL", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
 
-                    }
-                })
-                .setPositiveButton("SEND", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        String userName = forgotPasswordUserNameEditText.getText().toString();
-                        String email = forgotPasswordEmailEditText.getText().toString();
-                        listener.applyText(userName,email);
+        enterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String userName = forgotPasswordUserNameEditText.getText().toString();
+                String email = forgotPasswordEmailEditText.getText().toString();
+                listener.applyText(userName,email);
+                dismiss();
+            }
+        });
 
-                    }
-                });
+//        builder.setView(view).setTitle("Forgot Your Password??")
+//                .setNegativeButton("CENCEL", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                    }
+//                })
+//                .setPositiveButton("SEND", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//
+//
+//                    }
+//                });
 
         forgotPasswordEmailEditText = view.findViewById(R.id.forgotPasswordEmail_EditText);
         forgotPasswordUserNameEditText = view.findViewById(R.id.forgotPasswordUserName_EditText);
 
 
+        builder.setView(view);
 
         return builder.create();
 

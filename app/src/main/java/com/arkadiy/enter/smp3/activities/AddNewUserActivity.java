@@ -1,8 +1,13 @@
 package com.arkadiy.enter.smp3.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,6 +23,8 @@ import com.arkadiy.enter.smp3.config.ResponseCode;
 import com.arkadiy.enter.smp3.dataObjects.BuildUser;
 import com.arkadiy.enter.smp3.dataObjects.Department;
 import com.arkadiy.enter.smp3.dataObjects.Manager;
+import com.arkadiy.enter.smp3.dataObjects.User;
+import com.arkadiy.enter.smp3.services.GlobalServices;
 import com.arkadiy.enter.smp3.utils.Constants;
 
 import java.util.List;
@@ -54,6 +61,7 @@ public class AddNewUserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_user);
+
 
         App.setContext(this);
         rollNames = Manager.getRollNames();
@@ -115,7 +123,7 @@ public class AddNewUserActivity extends AppCompatActivity {
 
                        Bundle bundle = iHandler.getData();
                        if (bundle.getInt(Constants.RESPONSE_CODE) < ResponseCode.ERROR){
-                           Toast.makeText(App.getContext(),"User has been created",Toast.LENGTH_LONG).show();
+//                           Toast.makeText(App.getContext(),"User has been created",Toast.LENGTH_LONG).show();
                            resetViews();
                        }
                        else {
@@ -156,26 +164,37 @@ public class AddNewUserActivity extends AppCompatActivity {
 
             }
         });
-    }
+        Toolbar toolbar=(Toolbar)findViewById(R.id.toolbarMine);
+        setSupportActionBar(toolbar);
+        GlobalServices.addListener(toolbar,this);    }
 
 
 
     private void resetViews(){
-        addNewUserNameEditText.setText("");
-        addNewUserPasswordEditText.setText("");
-        addNewUserFirstNameEditText.setText("");
-        addNewUserSecondNameEditText.setText("");
+
+        Intent intent = new Intent(AddNewUserActivity.this,SavedActivity.class);
+        intent.putExtra("activity",AdminActivity.class.getName());
+        startActivity(intent);
+
+//        addNewUserNameEditText.setText("");
+//        addNewUserPasswordEditText.setText("");
+//        addNewUserFirstNameEditText.setText("");
+//        addNewUserSecondNameEditText.setText("");
         //rollsUser = (Spinner) findViewById(R.id.addNewUserRole_Spinner);
         //departmentsSinner = (Spinner) findViewById(R.id.addNewUserManager_Spinner);
-        addNewUserCityEditText.setText("");
-        addNewUserStreetEditText.setText("");
-        addNewUserHouseNumberEditText.setText("");
-        addNewUserDoorNumberEditText.setText("");
-        addNewUserTelephoneEditText.setText("");
-        addNewUserEmailEditText.setText("");
+//        addNewUserCityEditText.setText("");
+//        addNewUserStreetEditText.setText("");
+//        addNewUserHouseNumberEditText.setText("");
+//        addNewUserDoorNumberEditText.setText("");
+//        addNewUserTelephoneEditText.setText("");
+//        addNewUserEmailEditText.setText("");
 
     }
 
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
+    }
 
 }

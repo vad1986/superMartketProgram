@@ -179,16 +179,26 @@ public class Store {
 
      */
 
+
     public static Department getDepartmentById(int id){
         int i;
         for ( i = 0 ; i<departments.size(); i++){
             if(id == departments.get(i).getId()){
-                break;
+                return departments.get(i);
             }
         }
 
-        return departments.get(i);
+        return null;
     }
+
+    public static String getDepartmentNameById(int id){
+        Department department=getDepartmentById(id);
+        if(department!=null)
+            return department.getName();
+        else
+        return " ";
+    }
+
 
 //    public static void setAllUsers (List<Department> departments){
 //        allUsers = new ArrayList<User>();

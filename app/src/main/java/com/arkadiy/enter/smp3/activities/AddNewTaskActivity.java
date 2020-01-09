@@ -6,6 +6,10 @@ import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,11 +23,15 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.arkadiy.enter.smp3.R;
+import com.arkadiy.enter.smp3.config.AppConfig;
 import com.arkadiy.enter.smp3.dataObjects.Department;
 import com.arkadiy.enter.smp3.dataObjects.GetDate;
 import com.arkadiy.enter.smp3.dataObjects.Store;
 import com.arkadiy.enter.smp3.dataObjects.Task;
 import com.arkadiy.enter.smp3.dataObjects.User;
+import com.arkadiy.enter.smp3.services.DataServices;
+import com.arkadiy.enter.smp3.services.GlobalServices;
+import com.arkadiy.enter.smp3.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,6 +66,9 @@ public class AddNewTaskActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_task);
+
+
+
         toBuildActivity();
         //Set current time
         startDateTask.setText(GetDate.getToDate());
@@ -161,8 +172,19 @@ public class AddNewTaskActivity extends AppCompatActivity  {
             }
         });
 
+
+        Toolbar toolbar=(Toolbar)findViewById(R.id.toolbarMine);
+        setSupportActionBar(toolbar);
+        GlobalServices.addListener(toolbar,this);
+
     }
 //
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
+    }
 
     private void setUsersByDepartmentSelected(Department departmentSelected){
         arrayAdapterWorkers.clear(); //empty all array
@@ -262,12 +284,10 @@ public class AddNewTaskActivity extends AppCompatActivity  {
     }
     private void resetActivity() {
 
-
-        startDateTask.setText("");
-        endDateTask.setText("");
-        nameTaskEditText.setText("");
-        taskDecriptionEditText.setText("");
-        Intent intent = new Intent(AddNewTaskActivity.this,TasksActivity.class);
+        Intent intent = new Intent(AddNewTaskActivity.this,SavedActivity.class);
+        intent.putExtra("activity",TasksActivity.class.getName());
         startActivity(intent);
     }
+
+
 }

@@ -2,9 +2,10 @@ package com.arkadiy.enter.smp3.config;
 
 public class AppConfig {
     public static String DATA_FILE_NAME="smp_data";
-    public static String AWS="http://15.188.69.193";
-//    public static String LOCAL="http://10.0.0.4";
-    public static String LOCAL="http://10.0.0.9";
+//    public static String AWS="http://15.188.69.193";
+//    public static String LOCAL="localhost";
+//    public static String LOCAL="http://10.0.0.9";
+    public static String LOCAL="http://10.0.0.4";
     public static String MAIN_SERVER_IP=LOCAL;
     public static String SOCKET_SERVER_URL="";
     public static String MAIN_SERVER_PORT=":8080";
@@ -21,6 +22,7 @@ public class AppConfig {
     public static String ONLINE_USERS = MAIN_SERVER_IP+MAIN_SERVER_PORT+"/onlineUsers";
     public static String SEND_ALERT = MAIN_SERVER_IP+MAIN_SERVER_PORT+"/message";
     public static String GET_GPS_CURRENT_SETTINGS = MAIN_SERVER_IP+MAIN_SERVER_PORT+"/punch_clock-params";
+    public static String GET_ALERTS = MAIN_SERVER_IP+MAIN_SERVER_PORT+"/sentences";
     public static String ADD_SHOP_SETTING_LOCATION = MAIN_SERVER_IP+MAIN_SERVER_PORT+"/manager/addShopLocation";
     public static String GET_SHIFTS = MAIN_SERVER_IP+MAIN_SERVER_PORT+"/user-attendance/";
     public static String GET_SHIFTS_BY_USER = MAIN_SERVER_IP+MAIN_SERVER_PORT+"/user-attendance-all/";

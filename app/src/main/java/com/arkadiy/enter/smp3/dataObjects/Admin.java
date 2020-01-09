@@ -108,6 +108,20 @@ public class Admin extends Manager {
         });
     }
 
+    public static void getAlerts(Context context, JSONObject newJsonSettingsLocation, RequestQueue requestQueue, IHandler iHandlerLcation){
+
+        DataServices.sendData(AppConfig.GET_ALERTS,newJsonSettingsLocation,requestQueue, context, Constants.METHOD_GET,result->{
+
+            Message msg = new Message();
+            Bundle  bundle = result.getData();
+                msg.setData(bundle);
+                iHandlerLcation.sendMessage(msg);
+
+
+            return true;
+        });
+    }
+
     public static void replaceUser(User user) {
 
 

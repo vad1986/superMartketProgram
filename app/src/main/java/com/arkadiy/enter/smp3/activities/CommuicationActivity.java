@@ -3,6 +3,7 @@ package com.arkadiy.enter.smp3.activities;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,6 +18,7 @@ import com.arkadiy.enter.smp3.dataObjects.Alert;
 import com.arkadiy.enter.smp3.dataObjects.CustomAdapterAlert;
 import com.arkadiy.enter.smp3.dataObjects.Store;
 import com.arkadiy.enter.smp3.dataObjects.User;
+import com.arkadiy.enter.smp3.services.GlobalServices;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class CommuicationActivity extends AppCompatActivity {
     public static ListView alertListView;
@@ -112,6 +115,10 @@ public class CommuicationActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        Toolbar toolbar=(Toolbar)findViewById(R.id.toolbarMine);
+        setSupportActionBar(toolbar);
+        GlobalServices.addListener(toolbar,this);
+
 
     }
     //send alert to User Class and them to server and another user
@@ -194,5 +201,9 @@ public class CommuicationActivity extends AppCompatActivity {
 
     }
 
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
+    }
 }

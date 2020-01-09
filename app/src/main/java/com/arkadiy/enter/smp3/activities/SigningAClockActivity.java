@@ -8,6 +8,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -23,6 +24,7 @@ import com.arkadiy.enter.smp3.dataObjects.CustomAdapterHours;
 import com.arkadiy.enter.smp3.dataObjects.DayWork;
 import com.arkadiy.enter.smp3.dataObjects.IHandler;
 import com.arkadiy.enter.smp3.dataObjects.User;
+import com.arkadiy.enter.smp3.services.GlobalServices;
 import com.arkadiy.enter.smp3.services.GpsChecker;
 import com.arkadiy.enter.smp3.utils.Constants;
 import com.arkadiy.enter.smp3.utils.ConstantsJson;
@@ -45,10 +47,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
-public class SigningAClockActivity extends FragmentActivity implements ActivityCompat.OnRequestPermissionsResultCallback, OnMapReadyCallback {
+public class SigningAClockActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback, OnMapReadyCallback {
     private TextView enterDataTextView;
     private TextView exitDataTextView;
     private TextView userName;
@@ -146,7 +150,15 @@ public class SigningAClockActivity extends FragmentActivity implements ActivityC
 
         customAdapterHours = new CustomAdapterHours(SigningAClockActivity.this,listWork);
         weekWork.setAdapter(customAdapterHours);
+
+        Toolbar toolbar=(Toolbar)findViewById(R.id.toolbarMine);
+        setSupportActionBar(toolbar);
+        GlobalServices.addListener(toolbar,this);
+
+
     }
+
+
 
 
     private void setDayWork(JSONObject jsonResponse) {
@@ -362,5 +374,11 @@ public class SigningAClockActivity extends FragmentActivity implements ActivityC
         // mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney,zoomeLevel));
         CameraUpdate myLocation = CameraUpdateFactory.newLatLngZoom(location,zoomLevel);
         mMap.animateCamera(myLocation);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
     }
 }

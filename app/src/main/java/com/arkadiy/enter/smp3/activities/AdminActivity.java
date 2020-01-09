@@ -2,12 +2,15 @@ package com.arkadiy.enter.smp3.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
 import com.arkadiy.enter.smp3.R;
+import com.arkadiy.enter.smp3.services.GlobalServices;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class AdminActivity extends AppCompatActivity {
 
@@ -84,6 +87,16 @@ public class AdminActivity extends AppCompatActivity {
             }
         });
 
+        Toolbar toolbar=(Toolbar)findViewById(R.id.toolbarMine);
+        setSupportActionBar(toolbar);
+        GlobalServices.addListener(toolbar,this);
 
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
     }
 }

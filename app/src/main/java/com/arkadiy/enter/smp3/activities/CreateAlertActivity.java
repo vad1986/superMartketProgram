@@ -1,6 +1,8 @@
 package com.arkadiy.enter.smp3.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -11,12 +13,14 @@ import com.android.volley.toolbox.Volley;
 import com.arkadiy.enter.smp3.R;
 import com.arkadiy.enter.smp3.config.ResponseCode;
 import com.arkadiy.enter.smp3.dataObjects.Admin;
+import com.arkadiy.enter.smp3.services.GlobalServices;
 import com.arkadiy.enter.smp3.utils.Constants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class CreateAlertActivity extends AppCompatActivity {
 
@@ -45,6 +49,9 @@ public class CreateAlertActivity extends AppCompatActivity {
             }
         });
 
+        Toolbar toolbar=(Toolbar)findViewById(R.id.toolbarMine);
+        setSupportActionBar(toolbar);
+        GlobalServices.addListener(toolbar,this);
 
 
     }
@@ -61,8 +68,13 @@ public class CreateAlertActivity extends AppCompatActivity {
 
                 Toast.makeText(App.getContext(),json.getString("message"),Toast.LENGTH_LONG).show();
                 if (i_handler.getData().getInt(Constants.RESPONSE_CODE) < ResponseCode.ERROR){
-                    nameForNewAlert_textView.setText("");
-                    descriptionForNewAlert_textView.setText("");
+
+                    Intent intent = new Intent(CreateAlertActivity.this,SavedActivity.class);
+                    intent.putExtra("activity",AdminActivity.class.getName());
+                    startActivity(intent);
+
+//                    nameForNewAlert_textView.setText("");
+//                    descriptionForNewAlert_textView.setText("");
                     //Toast.makeText(App.getContext(),i_handler.getData().getString("message"),Toast.LENGTH_LONG).show();
                 }
                 } catch (JSONException e) {
@@ -76,4 +88,9 @@ public class CreateAlertActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
+    }
 }

@@ -2,6 +2,7 @@ package com.arkadiy.enter.smp3.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,26 +11,36 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.arkadiy.enter.smp3.R;
+import com.arkadiy.enter.smp3.config.AppConfig;
 import com.arkadiy.enter.smp3.config.ResponseCode;
 import com.arkadiy.enter.smp3.dataObjects.User;
 import com.arkadiy.enter.smp3.dataObjects.Users;
+import com.arkadiy.enter.smp3.services.DataServices;
+import com.arkadiy.enter.smp3.services.GlobalServices;
+import com.arkadiy.enter.smp3.utils.Constants;
 import com.arkadiy.enter.smp3.utils.ConstantsJson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,13 +65,16 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
     public static HashMap<Integer,ArrayList<Users>> USERS;
     static final Integer LOCATION = 0x1;
     public JSONArray globalRoles;
-
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        USERS =  new HashMap<>();
         setContentView(R.layout.activity_main);
+
+
+
+        USERS =  new HashMap<>();
 
         context = MainActivity.this;
 
@@ -88,9 +102,22 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
             return;
         }
 
+        Toolbar toolbar=(Toolbar)findViewById(R.id.toolbarMine);
+        setSupportActionBar(toolbar);
+        GlobalServices.addListener(toolbar,this);
 
 
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
+    }
+
+
+
     private void checkRoll(){
         int role = User.getMyRole();
         switch (role){
@@ -119,7 +146,7 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
         }
     }
     private void createUserUI(){
-        exitButton = (Button)findViewById(R.id.exit_Button);
+//        exitButton = (Button)findViewById(R.id.exit_Button);
         signingAClockButton = (Button)findViewById(R.id.signingAClock_Button);
         tasksButton = (Button)findViewById(R.id.tasks_Button);
 
@@ -160,14 +187,14 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
                 startActivity(intent);
             }
         });
-        exitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                DataServices.sendData(AppConfig.LOGOUT_SERVER,jsonObject,requestQueue,
-//                MainActivity.this,Constants.METHOD_POST,null);
-                User.logOut();
-            }
-        });
+//        exitButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                DataServices.sendData(AppConfig.LOGOUT_SERVER,jsonObject,requestQueue,
+////                MainActivity.this,Constants.METHOD_POST,null);
+//                User.logOut();
+//            }
+//        });
     }
 //    private void createMainManagerUI(){
 //

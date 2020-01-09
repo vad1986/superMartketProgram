@@ -9,22 +9,28 @@
     android:layout_height="match_parent"
     tools:context=".activities.TasksActivity">
 
-
-
-    <include android:id="@+id/toolbar_Task_Activity"
-        layout="@layout/toolbar"/>
+    <include layout="@layout/toolbar" />
 
 
     <TextView
-        android:gravity="center"
         android:id="@+id/YourTasksToPerform"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar_Task_Activity"
         android:layout_centerHorizontal="true"
-        android:text="UNCOMPLETED TASKS"
+        android:background="@color/background"
+        android:fontFamily="@font/bangers"
+        android:gravity="center"
+        android:text="Uncompleted Tasks"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="@color/black"
         android:visibility="visible" />
+
+    <View
+        android:layout_marginBottom="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:paddingBottom="10sp"
+        android:background="@android:color/darker_gray"/>
 
     <com.baoyz.swipemenulistview.SwipeMenuListView
         android:id="@+id/listViewTask"
@@ -37,8 +43,6 @@
         tools:layout_editor_absoluteY="8dp"></com.baoyz.swipemenulistview.SwipeMenuListView>
 
 
-    android:layout_below="@+id/YourTasksToPerform"
-    android:dividerHeight="5.0sp"
 
     <!--<TextView
         android:id="@+id/amountOfTasks_TextView"
@@ -48,24 +52,13 @@
         android:layout_centerHorizontal="true"
         android:textSize="25dp"/>-->
 
-    <Button
-        android:id="@+id/creatNewTaskActivity_button"
-        android:layout_width="300dp"
-        android:layout_height="10dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="0dp"
-        android:layout_weight="1"
 
+    <ImageButton
+        android:id="@+id/addNewTaskButton"
+        android:layout_marginLeft="150sp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/ic_plus">
 
-        android:background="@drawable/buttonshape"
-
-        android:gravity="center"
-        android:shadowColor="#A8A8A8"
-        android:shadowDx="0"
-        android:shadowDy="0"
-        android:shadowRadius="5"
-        android:text="ADD NEW TASK"
-        android:textColor="#FFFFFF"
-        android:textSize="30sp" />
+    </ImageButton>
 </LinearLayout>

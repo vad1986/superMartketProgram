@@ -2,13 +2,16 @@ package com.arkadiy.enter.smp3.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Handler;
+import android.provider.CalendarContract;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +35,8 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+import javax.security.auth.login.LoginException;
+
 import static com.arkadiy.enter.smp3.dataObjects.User.successfulLoginAndFillData;
 
 public class LogInActivity extends AppCompatActivity implements DialogforgotPassword.DialogforgotPasswordListener {
@@ -45,12 +50,14 @@ public class LogInActivity extends AppCompatActivity implements DialogforgotPass
     public static DataBaseHelperGlobalRoles dataBaseHelperGlobalRoles;
     private TextView forgotPasswordTextVView;
     private TextView errorResponseView;
-    RelativeLayout rellay1,rellay2;
+    RelativeLayout rellay1,loginActivity;
+    RelativeLayout rellay2;
 
     Runnable runnable=new Runnable() {
         @Override
         public void run() {
             rellay1.setVisibility(View.INVISIBLE);
+
             afterTransition();
 
         }
@@ -64,7 +71,8 @@ public class LogInActivity extends AppCompatActivity implements DialogforgotPass
         Handler handler=new Handler();
 
         rellay1=(RelativeLayout)findViewById(R.id.rellay1);
-        rellay2=(RelativeLayout)findViewById(R.id.rellay2);
+        rellay2=(RelativeLayout) findViewById(R.id.rellay2);
+        loginActivity=(RelativeLayout) findViewById(R.id.login);
 
         handler.postDelayed(runnable,3000);
 
@@ -90,6 +98,7 @@ public class LogInActivity extends AppCompatActivity implements DialogforgotPass
         User keyAndUserId=FileService.getPrivateKey();
 
         if(keyAndUserId!=null) {
+
             DataServices.sendData(AppConfig.CHECK_PRIVATE_KEY + keyAndUserId.getPrivateKey() + "/"
                             + keyAndUserId.getUserId(),
                     null, requestQueue, LogInActivity.this,
@@ -104,6 +113,7 @@ public class LogInActivity extends AppCompatActivity implements DialogforgotPass
                                     successfulLoginAndFillData(jsonRespons);
                                 }else{
                                     rellay2.setVisibility(View.VISIBLE);
+
 
                                 }
 
